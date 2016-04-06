@@ -369,7 +369,8 @@ public class PanelClientes extends JPanel implements ActionListener {
 		if (btnBuscar == e.getSource()) {
 
 		} else if (btnLimpiar == e.getSource()) {
-
+			txtDni.setText("");
+			txtNombre.setText("");
 		} else if (btnBorrar == e.getSource()) {
 
 		} else if (btnVerAlquileres == e.getSource()) {
