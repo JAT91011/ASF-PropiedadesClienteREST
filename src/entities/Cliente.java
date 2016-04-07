@@ -103,4 +103,10 @@ public class Cliente {
 	public void setAlquileres(ArrayList<Alquiler> alquileres) {
 		this.alquileres = alquileres;
 	}
+
+	@Override
+	public String toString() {
+		return "Cliente [dni=" + dni + ", nombre=" + nombre + ", apellido=" + apellido + ", email=" + email + ", direccion=" + direccion
+				+ ", codigoPostal=" + codigoPostal + ", telefono=" + telefono + ", alquileres=" + alquileres + "]";
+	}
 }
