@@ -1,6 +1,8 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -8,6 +10,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Cliente {
 
 	private static final String	NIF_STRING_ASOCIATION	= "TRWAGMYFPDXBNJZSQVHLCKE";
+	private static final String	PATTERN_EMAIL			= "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	private int					dni;
 	private String				nombre;
@@ -52,7 +56,7 @@ public class Cliente {
 	}
 
 	public String getDNIChar() {
-		return String.valueOf(this.dni) + NIF_STRING_ASOCIATION.charAt(dni % 23);
+		return String.valueOf(this.dni) + "-" + NIF_STRING_ASOCIATION.charAt(dni % 23);
 	}
 
 	public String getNombre() {
@@ -77,6 +81,12 @@ public class Cliente {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public static boolean validateEmail(String email) {
+		Pattern pattern = Pattern.compile(PATTERN_EMAIL);
+		Matcher matcher = pattern.matcher(email);
+		return matcher.matches();
 	}
 
 	public String getDireccion() {
