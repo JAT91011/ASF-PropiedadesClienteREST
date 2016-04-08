@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
@@ -38,6 +39,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 
 	private JButton				btnNuevo;
 	private JButton				btnGuardar;
+	private JTable				table;
 
 	public PanelClientes() {
 
@@ -146,6 +148,9 @@ public class PanelClientes extends JPanel implements ActionListener {
 		gbc_scrollPane.gridx = 1;
 		gbc_scrollPane.gridy = 0;
 		panTabla.add(scrollPane, gbc_scrollPane);
+
+		table = new JTable();
+		scrollPane.setViewportView(table);
 
 		JPanel panBotoneraTabla = new JPanel();
 		GridBagConstraints gbc_panBotoneraTabla = new GridBagConstraints();
