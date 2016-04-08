@@ -667,6 +667,18 @@ public class PanelClientes extends JPanel implements ActionListener {
 		mode = MODE_NEW;
 	}
 
+	public void showAlquileres() {
+		int selectedRow = table.getSelectedRow();
+		if (selectedRow >= 0) {
+			Cliente c = clientesVisualizados.get(selectedRow);
+			PanelAlquileres panAlquileres = new PanelAlquileres(c);
+			Window.getInstance().setContainer(panAlquileres);
+		} else {
+			JOptionPane.showMessageDialog(Window.getInstance(), "Selecciona un cliente para poder ver sus alquileres", "Alerta",
+					JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
 	public void actionPerformed(ActionEvent e) {
 		if (btnBuscar == e.getSource()) {
 			filterData();
@@ -676,7 +688,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 		} else if (btnBorrar == e.getSource()) {
 			deleteCliente();
 		} else if (btnVerAlquileres == e.getSource()) {
-			// TODO
+			showAlquileres();
 		} else if (btnNuevo == e.getSource()) {
 			clearFormData();
 		} else if (btnGuardar == e.getSource()) {

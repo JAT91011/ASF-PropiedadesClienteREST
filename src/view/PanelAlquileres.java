@@ -5,6 +5,10 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,36 +22,58 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import entities.Cliente;
+import view.components.TableModel;
 
-public class PanelAlquileres extends JPanel {
+public class PanelAlquileres extends JPanel implements ActionListener {
 
 	private static final long	serialVersionUID	= 3716515640526061428L;
 
 	private Cliente				cliente;
 
+	private JButton				btnVolver;
 	private JButton				btnBorrar;
 	private JButton				btnNuevo;
 	private JButton				btnGuardar;
+	private JButton				btnSeleccionarFechaInicio;
+	private JButton				btnSeleccionarFechaFin;
+
 	private JTextField			txtPrecio;
 	private JTable				table;
+
+	private TableModel			modelTable;
+
+	private String[]			header;
+
+	private JComboBox<String>	cboPropiedades;
+	private JComboBox<String>	cboActividad;
 
 	public PanelAlquileres(Cliente cliente) {
 
 		this.cliente = cliente;
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 20, 0, 20, 0 };
+		gridBagLayout.columnWidths = new int[] { 20, 0, 0, 20, 0 };
 		gridBagLayout.rowHeights = new int[] { 20, 0, 0, 0, 20, 0 };
-		gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
+
+		btnVolver = new JButton("VOLVER");
+		btnVolver.addActionListener(this);
+		btnVolver.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		GridBagConstraints gbc_btnVolver = new GridBagConstraints();
+		gbc_btnVolver.fill = GridBagConstraints.BOTH;
+		gbc_btnVolver.insets = new Insets(0, 0, 10, 5);
+		gbc_btnVolver.gridx = 1;
+		gbc_btnVolver.gridy = 1;
+		add(btnVolver, gbc_btnVolver);
 
 		JPanel panCliente = new JPanel();
 		panCliente.setBorder(new TitledBorder(null, "Cliente", TitledBorder.ABOVE_TOP, TitledBorder.ABOVE_TOP, null, null));
 		GridBagConstraints gbc_panCliente = new GridBagConstraints();
 		gbc_panCliente.insets = new Insets(0, 0, 10, 5);
 		gbc_panCliente.fill = GridBagConstraints.BOTH;
-		gbc_panCliente.gridx = 1;
+		gbc_panCliente.gridx = 2;
 		gbc_panCliente.gridy = 1;
 		add(panCliente, gbc_panCliente);
 		GridBagLayout gbl_panCliente = new GridBagLayout();
@@ -96,6 +122,7 @@ public class PanelAlquileres extends JPanel {
 		JPanel panTabla = new JPanel();
 		panTabla.setBorder(new TitledBorder(null, "Alquileres", TitledBorder.ABOVE_TOP, TitledBorder.ABOVE_TOP, null, null));
 		GridBagConstraints gbc_panTabla = new GridBagConstraints();
+		gbc_panTabla.gridwidth = 2;
 		gbc_panTabla.insets = new Insets(0, 0, 10, 5);
 		gbc_panTabla.fill = GridBagConstraints.BOTH;
 		gbc_panTabla.gridx = 1;
@@ -116,7 +143,34 @@ public class PanelAlquileres extends JPanel {
 		gbc_scrollPane.gridy = 0;
 		panTabla.add(scrollPane, gbc_scrollPane);
 
-		table = new JTable();
+		header = new String[5];
+		header[0] = "Propiedad";
+		header[1] = "Actividad";
+		header[2] = "Fcha. Inicio";
+		header[3] = "Fcha. Fin";
+		header[4] = "Precio";
+
+		modelTable = new TableModel();
+		modelTable.setDataVector(new String[0][0], header);
+
+		table = new JTable(modelTable);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setDragEnabled(false);
+		table.setSelectionForeground(Color.WHITE);
+		table.setSelectionBackground(Color.BLUE);
+		table.setForeground(Color.BLACK);
+		table.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 15));
+		table.setRowHeight(20);
+		table.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 15));
+		table.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent me) {
+				int row = table.getSelectedRow();
+				if (row >= 0) {
+
+				}
+			}
+		});
+
 		scrollPane.setViewportView(table);
 
 		JPanel panBotoneraTabla = new JPanel();
@@ -135,6 +189,7 @@ public class PanelAlquileres extends JPanel {
 		panBotoneraTabla.setLayout(gbl_panBotoneraTabla);
 
 		btnBorrar = new JButton("ELIMINAR");
+		btnBorrar.addActionListener(this);
 		btnBorrar.setIcon(new ImageIcon("icons/remove-icon.png"));
 		btnBorrar.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_btnBorrar = new GridBagConstraints();
@@ -147,6 +202,7 @@ public class PanelAlquileres extends JPanel {
 		JPanel panEdicion = new JPanel();
 		panEdicion.setBorder(new TitledBorder(null, "Edición", TitledBorder.ABOVE_TOP, TitledBorder.ABOVE_TOP, null, null));
 		GridBagConstraints gbc_panEdicion = new GridBagConstraints();
+		gbc_panEdicion.gridwidth = 2;
 		gbc_panEdicion.insets = new Insets(0, 0, 5, 5);
 		gbc_panEdicion.fill = GridBagConstraints.BOTH;
 		gbc_panEdicion.gridx = 1;
@@ -168,7 +224,7 @@ public class PanelAlquileres extends JPanel {
 		gbc_lblPropiedadEditor.gridy = 0;
 		panEdicion.add(lblPropiedadEditor, gbc_lblPropiedadEditor);
 
-		JComboBox cboPropiedades = new JComboBox();
+		cboPropiedades = new JComboBox<String>();
 		cboPropiedades.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_cboPropiedades = new GridBagConstraints();
 		gbc_cboPropiedades.insets = new Insets(10, 0, 5, 5);
@@ -193,6 +249,7 @@ public class PanelAlquileres extends JPanel {
 		panel.setLayout(gbl_panel);
 
 		btnNuevo = new JButton("NUEVO");
+		btnNuevo.addActionListener(this);
 		btnNuevo.setIcon(new ImageIcon("icons/add-icon.png"));
 		btnNuevo.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_btnNuevo = new GridBagConstraints();
@@ -202,6 +259,7 @@ public class PanelAlquileres extends JPanel {
 		panel.add(btnNuevo, gbc_btnNuevo);
 
 		btnGuardar = new JButton("GUARDAR");
+		btnGuardar.addActionListener(this);
 		btnGuardar.setIcon(new ImageIcon("icons/save-icon.png"));
 		btnGuardar.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_btnGuardar = new GridBagConstraints();
@@ -219,7 +277,7 @@ public class PanelAlquileres extends JPanel {
 		gbc_lblActividadEditor.gridy = 1;
 		panEdicion.add(lblActividadEditor, gbc_lblActividadEditor);
 
-		JComboBox cboActividad = new JComboBox();
+		cboActividad = new JComboBox<String>();
 		cboActividad.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_cboActividad = new GridBagConstraints();
 		gbc_cboActividad.gridwidth = 3;
@@ -263,11 +321,11 @@ public class PanelAlquileres extends JPanel {
 		gbc_lblFechaInicioValor.gridy = 0;
 		panFechaInicio.add(lblFechaInicioValor, gbc_lblFechaInicioValor);
 
-		JButton btnSeleccionarInicio = new JButton("Seleccionar");
+		btnSeleccionarFechaInicio = new JButton("Seleccionar");
 		GridBagConstraints gbc_btnSeleccionarInicio = new GridBagConstraints();
 		gbc_btnSeleccionarInicio.gridx = 1;
 		gbc_btnSeleccionarInicio.gridy = 0;
-		panFechaInicio.add(btnSeleccionarInicio, gbc_btnSeleccionarInicio);
+		panFechaInicio.add(btnSeleccionarFechaInicio, gbc_btnSeleccionarInicio);
 
 		JLabel lblFechaFinEditor = new JLabel("FECHA FIN:");
 		lblFechaFinEditor.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
@@ -303,7 +361,7 @@ public class PanelAlquileres extends JPanel {
 		gbc_lblFechaFinValor.gridy = 0;
 		panFechaFin.add(lblFechaFinValor, gbc_lblFechaFinValor);
 
-		JButton btnSeleccionarFechaFin = new JButton("Seleccionar");
+		btnSeleccionarFechaFin = new JButton("Seleccionar");
 		GridBagConstraints gbc_btnSeleccionarFechaFin = new GridBagConstraints();
 		gbc_btnSeleccionarFechaFin.gridx = 1;
 		gbc_btnSeleccionarFechaFin.gridy = 0;
@@ -327,5 +385,23 @@ public class PanelAlquileres extends JPanel {
 		gbc_txtPrecio.gridy = 4;
 		panEdicion.add(txtPrecio, gbc_txtPrecio);
 		txtPrecio.setColumns(10);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (btnVolver == e.getSource()) {
+			Window.getInstance().setContainer(new PanelClientes());
+			((PanelClientes) Window.getInstance().getContentPane()).updateUI();
+		} else if (btnBorrar == e.getSource()) {
+
+		} else if (btnNuevo == e.getSource()) {
+
+		} else if (btnGuardar == e.getSource()) {
+
+		} else if (btnSeleccionarFechaInicio == e.getSource()) {
+
+		} else if (btnSeleccionarFechaFin == e.getSource()) {
+
+		}
 	}
 }
