@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -525,6 +526,31 @@ public class PanelClientes extends JPanel implements ActionListener {
 		}
 	}
 
+	public void deleteCliente() {
+		int selectedRow = table.getSelectedRow();
+		if (selectedRow >= 0) {
+			Cliente c = clientesVisualizados.get(selectedRow);
+			if (ClientManager.getInstance().deleteCliente(c.getDni())) {
+				int aux = 0;
+				for (aux = 0; aux < clientes.size(); aux++) {
+					if (clientes.get(aux).getDni() == c.getDni()) {
+						break;
+					}
+				}
+				clientesVisualizados.remove(selectedRow);
+				clientes.remove(aux);
+				updateData();
+				JOptionPane.showMessageDialog(Window.getInstance(), "El cliente con DNI: " + c.getDNIChar() + " se ha eliminado correctamente.",
+						"Eliminado correctamente", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(Window.getInstance(), "Ha ocurrido un error al eliminar el cliente.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		} else {
+			JOptionPane.showMessageDialog(Window.getInstance(), "Selecciona un cliente para poder eliminarlo", "Alerta", JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
 	public void actionPerformed(ActionEvent e) {
 		if (btnBuscar == e.getSource()) {
 			filterData();
@@ -532,7 +558,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 			txtDni.setText("");
 			txtNombre.setText("");
 		} else if (btnBorrar == e.getSource()) {
-
+			deleteCliente();
 		} else if (btnVerAlquileres == e.getSource()) {
 
 		} else if (btnNuevo == e.getSource()) {
