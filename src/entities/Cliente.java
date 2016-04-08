@@ -6,6 +6,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Cliente {
+
+	private static final String	NIF_STRING_ASOCIATION	= "TRWAGMYFPDXBNJZSQVHLCKE";
+
 	private int					dni;
 	private String				nombre;
 	private String				apellido;
@@ -46,6 +49,10 @@ public class Cliente {
 
 	public void setDni(int dni) {
 		this.dni = dni;
+	}
+
+	public String getDNIChar() {
+		return String.valueOf(this.dni) + NIF_STRING_ASOCIATION.charAt(dni % 23);
 	}
 
 	public String getNombre() {

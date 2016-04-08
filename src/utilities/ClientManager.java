@@ -45,8 +45,13 @@ public class ClientManager {
 	}
 
 	public ArrayList<Cliente> getAllClientes() {
-		Cliente[] array = service.path("rest").path("clientes").get(Cliente[].class);
-		return new ArrayList<Cliente>(Arrays.asList(array));
+		Cliente[] array = null;
+		try {
+			array = service.path("rest").path("clientes").get(Cliente[].class);
+			return new ArrayList<Cliente>(Arrays.asList(array));
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public boolean saveCliente(final Cliente client) {

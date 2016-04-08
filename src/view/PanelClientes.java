@@ -1,11 +1,18 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +22,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+
+import entities.Cliente;
+import utilities.ClientManager;
+import view.components.TableModel;
 
 public class PanelClientes extends JPanel implements ActionListener {
 
@@ -39,9 +50,18 @@ public class PanelClientes extends JPanel implements ActionListener {
 
 	private JButton				btnNuevo;
 	private JButton				btnGuardar;
+
+	private String[]			header;
 	private JTable				table;
+	private TableModel			modelTable;
+
+	private ArrayList<Cliente>	clientes;
+	private ArrayList<Cliente>	clientesVisualizados;
+	private Cliente				currentCliente;
 
 	public PanelClientes() {
+
+		currentCliente = null;
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 20, 0, 20, 0 };
@@ -75,6 +95,15 @@ public class PanelClientes extends JPanel implements ActionListener {
 		panFiltro.add(lblDni, gbc_lblDni);
 
 		txtDni = new JTextField();
+		txtDni.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char ch = e.getKeyChar();
+				if ((ch < '0' || ch > '9') || txtDni.getText().length() == 8) {
+					e.consume();
+				}
+			}
+		});
 		txtDni.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_txtDni = new GridBagConstraints();
 		gbc_txtDni.anchor = GridBagConstraints.WEST;
@@ -83,28 +112,6 @@ public class PanelClientes extends JPanel implements ActionListener {
 		gbc_txtDni.gridy = 0;
 		panFiltro.add(txtDni, gbc_txtDni);
 		txtDni.setColumns(10);
-
-		btnBuscar = new JButton("BUSCAR");
-		btnBuscar.setIcon(new ImageIcon("icons/search-icon.png"));
-		btnBuscar.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
-		GridBagConstraints gbc_btnBuscar = new GridBagConstraints();
-		gbc_btnBuscar.fill = GridBagConstraints.BOTH;
-		gbc_btnBuscar.gridheight = 2;
-		gbc_btnBuscar.insets = new Insets(10, 0, 10, 5);
-		gbc_btnBuscar.gridx = 3;
-		gbc_btnBuscar.gridy = 0;
-		panFiltro.add(btnBuscar, gbc_btnBuscar);
-
-		btnLimpiar = new JButton("LIMPIAR");
-		btnLimpiar.setIcon(new ImageIcon("icons/clear-icon.png"));
-		btnLimpiar.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
-		GridBagConstraints gbc_btnLimpiar = new GridBagConstraints();
-		gbc_btnLimpiar.fill = GridBagConstraints.BOTH;
-		gbc_btnLimpiar.gridheight = 2;
-		gbc_btnLimpiar.insets = new Insets(10, 0, 10, 5);
-		gbc_btnLimpiar.gridx = 4;
-		gbc_btnLimpiar.gridy = 0;
-		panFiltro.add(btnLimpiar, gbc_btnLimpiar);
 
 		JLabel lblNombre = new JLabel("NOMBRE:");
 		lblNombre.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
@@ -125,6 +132,30 @@ public class PanelClientes extends JPanel implements ActionListener {
 		gbc_txtNombre.gridy = 1;
 		panFiltro.add(txtNombre, gbc_txtNombre);
 		txtNombre.setColumns(20);
+
+		btnBuscar = new JButton("BUSCAR");
+		btnBuscar.addActionListener(this);
+		btnBuscar.setIcon(new ImageIcon("icons/search-icon.png"));
+		btnBuscar.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		GridBagConstraints gbc_btnBuscar = new GridBagConstraints();
+		gbc_btnBuscar.fill = GridBagConstraints.BOTH;
+		gbc_btnBuscar.gridheight = 2;
+		gbc_btnBuscar.insets = new Insets(10, 0, 10, 5);
+		gbc_btnBuscar.gridx = 3;
+		gbc_btnBuscar.gridy = 0;
+		panFiltro.add(btnBuscar, gbc_btnBuscar);
+
+		btnLimpiar = new JButton("LIMPIAR");
+		btnLimpiar.addActionListener(this);
+		btnLimpiar.setIcon(new ImageIcon("icons/clear-icon.png"));
+		btnLimpiar.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		GridBagConstraints gbc_btnLimpiar = new GridBagConstraints();
+		gbc_btnLimpiar.fill = GridBagConstraints.BOTH;
+		gbc_btnLimpiar.gridheight = 2;
+		gbc_btnLimpiar.insets = new Insets(10, 0, 10, 5);
+		gbc_btnLimpiar.gridx = 4;
+		gbc_btnLimpiar.gridy = 0;
+		panFiltro.add(btnLimpiar, gbc_btnLimpiar);
 
 		JPanel panTabla = new JPanel();
 		panTabla.setBorder(new TitledBorder(null, "Clientes", TitledBorder.ABOVE_TOP, TitledBorder.ABOVE_TOP, null, null));
@@ -149,7 +180,35 @@ public class PanelClientes extends JPanel implements ActionListener {
 		gbc_scrollPane.gridy = 0;
 		panTabla.add(scrollPane, gbc_scrollPane);
 
-		table = new JTable();
+		header = new String[7];
+		header[0] = "DNI";
+		header[1] = "Nombre";
+		header[2] = "Apellido";
+		header[3] = "Email";
+		header[4] = "Direcci\u00f3n";
+		header[5] = "C.P.";
+		header[6] = "Tel\u00e9fono";
+
+		modelTable = new TableModel();
+		modelTable.setDataVector(new String[0][0], header);
+
+		table = new JTable(modelTable);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setDragEnabled(false);
+		table.setSelectionForeground(Color.WHITE);
+		table.setSelectionBackground(Color.BLUE);
+		table.setForeground(Color.BLACK);
+		table.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 15));
+		table.setRowHeight(20);
+		table.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 15));
+		table.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent me) {
+				Point p = me.getPoint();
+				int row = table.rowAtPoint(p);
+
+			}
+		});
+
 		scrollPane.setViewportView(table);
 
 		JPanel panBotoneraTabla = new JPanel();
@@ -211,6 +270,15 @@ public class PanelClientes extends JPanel implements ActionListener {
 		panEdicion.add(lblDniEditor, gbc_lblDniEditor);
 
 		txtDniEditor = new JTextField();
+		txtDniEditor.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char ch = e.getKeyChar();
+				if ((ch < '0' || ch > '9') || txtDniEditor.getText().length() == 8) {
+					e.consume();
+				}
+			}
+		});
 		txtDniEditor.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		txtDniEditor.setColumns(10);
 		GridBagConstraints gbc_txtDniEditor = new GridBagConstraints();
@@ -341,6 +409,15 @@ public class PanelClientes extends JPanel implements ActionListener {
 		panEdicion.add(lblTelefonoEditor, gbc_lblTelefonoEditor);
 
 		txtTelefonoEditor = new JTextField();
+		txtTelefonoEditor.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char ch = e.getKeyChar();
+				if ((ch < '0' || ch > '9') || txtTelefonoEditor.getText().length() == 9) {
+					e.consume();
+				}
+			}
+		});
 		txtTelefonoEditor.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		txtTelefonoEditor.setColumns(20);
 		GridBagConstraints gbc_txtTelefonoEditor = new GridBagConstraints();
@@ -360,6 +437,15 @@ public class PanelClientes extends JPanel implements ActionListener {
 		panEdicion.add(lblCodPostal, gbc_lblCodPostal);
 
 		txtCodPostalEditor = new JTextField();
+		txtCodPostalEditor.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char ch = e.getKeyChar();
+				if ((ch < '0' || ch > '9') || txtCodPostalEditor.getText().length() == 5) {
+					e.consume();
+				}
+			}
+		});
 		txtCodPostalEditor.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		txtCodPostalEditor.setColumns(20);
 		GridBagConstraints gbc_txtCodPostalEditor = new GridBagConstraints();
@@ -368,11 +454,77 @@ public class PanelClientes extends JPanel implements ActionListener {
 		gbc_txtCodPostalEditor.gridx = 4;
 		gbc_txtCodPostalEditor.gridy = 4;
 		panEdicion.add(txtCodPostalEditor, gbc_txtCodPostalEditor);
+
+		// Se cargan todos los clientes del servidor
+		loadData();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void loadData() {
+		// TODO Obtener los clientes del servidor y cargar la tabla
+		clientes = ClientManager.getInstance().getAllClientes();
+		if (clientes != null && clientes.size() > 0) {
+			clientesVisualizados = (ArrayList<Cliente>) clientes.clone();
+			updateData();
+			System.out.println("Se han cargado: " + this.clientesVisualizados.size() + " clientes");
+		} else {
+			System.out.println("No se ha cargado ningun cliente");
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void filterData() {
+		// TODO visualizar los clientes con el dni y nombre introducidos
+		if (clientes != null && clientes.size() > 0) {
+			clientesVisualizados = (ArrayList<Cliente>) clientes.clone();
+			for (Cliente c : clientes) {
+				if (!txtDni.getText().isEmpty() && !txtNombre.getText().isEmpty()) {
+					// Se filtra por dni y por nombre
+					if (Integer.parseInt(txtDni.getText()) == c.getDni() && txtNombre.getText().trim().equals(c.getNombre())) {
+						clientesVisualizados.add(c);
+					}
+				} else if (!txtDni.getText().isEmpty()) {
+					// Se filtra por dni
+					if (Integer.parseInt(txtDni.getText()) == c.getDni()) {
+						clientesVisualizados.add(c);
+					}
+				} else if (!txtNombre.getText().isEmpty()) {
+					// Se filtra por nombre
+					if (txtNombre.getText().trim().equals(c.getNombre())) {
+						clientesVisualizados.add(c);
+					}
+				}
+			}
+			updateData();
+			System.out.println("Se han cargado: " + this.clientesVisualizados.size() + " clientes");
+		} else {
+			System.out.println("No se ha cargado ningun cliente");
+		}
+	}
+
+	public void updateData() {
+		modelTable.setDataVector(new String[clientesVisualizados.size()][header.length], header);
+		for (int i = 0; i < clientes.size(); i++) {
+			// DNI
+			table.getModel().setValueAt(clientesVisualizados.get(i).getDNIChar(), i, 0);
+			// NOMBRE
+			table.getModel().setValueAt(clientesVisualizados.get(i).getNombre(), i, 1);
+			// APELLIDO
+			table.getModel().setValueAt(clientesVisualizados.get(i).getApellido(), i, 2);
+			// EMAIL
+			table.getModel().setValueAt(clientesVisualizados.get(i).getEmail(), i, 3);
+			// DIRECCION
+			table.getModel().setValueAt(clientesVisualizados.get(i).getDireccion(), i, 4);
+			// CP
+			table.getModel().setValueAt(Integer.toString(clientesVisualizados.get(i).getCodigoPostal()), i, 5);
+			// TELEFONO
+			table.getModel().setValueAt(Integer.toString(clientesVisualizados.get(i).getTelefono()), i, 6);
+		}
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		if (btnBuscar == e.getSource()) {
-
+			filterData();
 		} else if (btnLimpiar == e.getSource()) {
 			txtDni.setText("");
 			txtNombre.setText("");
