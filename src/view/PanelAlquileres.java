@@ -26,12 +26,14 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JTextFieldDateEditor;
+
 import entities.Actividad;
 import entities.Alquiler;
 import entities.Cliente;
 import entities.Propiedad;
 import utilities.ClientManager;
-import utilities.DatePicker;
 import view.components.TableModel;
 
 public class PanelAlquileres extends JPanel implements ActionListener {
@@ -47,10 +49,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 	private JButton							btnBorrar;
 	private JButton							btnNuevo;
 	private JButton							btnGuardar;
-	private JButton							btnSeleccionarFechaInicio;
-	private JButton							btnSeleccionarFechaFin;
 
-	private JTextField						txtPrecio;
 	private JTable							table;
 
 	private TableModel						modelTable;
@@ -67,12 +66,11 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 	private DefaultComboBoxModel<String>	cboPropiedadesModel;
 	private DefaultComboBoxModel<String>	cboActividadesModel;
+	private JDateChooser					dcFechaInicio;
+	private JDateChooser					dcFechaFin;
+	private JTextField						txtPrecio;
 
 	private int								mode				= 0;
-
-	private JLabel							lblFechaInicioValor;
-
-	private JLabel							lblFechaFinValor;
 
 	public PanelAlquileres(Cliente cliente) {
 
@@ -86,7 +84,8 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		setLayout(gridBagLayout);
 
-		btnVolver = new JButton("VOLVER");
+		btnVolver = new JButton();
+		btnVolver.setIcon(new ImageIcon("icons/back-icon.png"));
 		btnVolver.addActionListener(this);
 		btnVolver.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_btnVolver = new GridBagConstraints();
@@ -324,36 +323,20 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		gbc_lblFechaInicioEditor.gridy = 2;
 		panEdicion.add(lblFechaInicioEditor, gbc_lblFechaInicioEditor);
 
-		JPanel panFechaInicio = new JPanel();
+		dcFechaInicio = new JDateChooser();
+		((JTextFieldDateEditor) dcFechaInicio.getDateEditor()).setEditable(false);
+		;
+		((JTextFieldDateEditor) dcFechaInicio.getDateEditor()).setFocusable(false);
+		((JTextFieldDateEditor) dcFechaInicio.getDateEditor()).setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		((JTextFieldDateEditor) dcFechaInicio.getDateEditor()).setDisabledTextColor(Color.BLACK);
+		((JTextFieldDateEditor) dcFechaInicio.getDateEditor()).setEnabled(false);
 		GridBagConstraints gbc_panFechaInicio = new GridBagConstraints();
 		gbc_panFechaInicio.gridwidth = 3;
 		gbc_panFechaInicio.insets = new Insets(0, 0, 5, 5);
 		gbc_panFechaInicio.fill = GridBagConstraints.BOTH;
 		gbc_panFechaInicio.gridx = 2;
 		gbc_panFechaInicio.gridy = 2;
-		panEdicion.add(panFechaInicio, gbc_panFechaInicio);
-		GridBagLayout gbl_panFechaInicio = new GridBagLayout();
-		gbl_panFechaInicio.columnWidths = new int[] { 0, 0, 0 };
-		gbl_panFechaInicio.rowHeights = new int[] { 0, 0 };
-		gbl_panFechaInicio.columnWeights = new double[] { 1.0, 0.0, Double.MIN_VALUE };
-		gbl_panFechaInicio.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-		panFechaInicio.setLayout(gbl_panFechaInicio);
-
-		lblFechaInicioValor = new JLabel();
-		lblFechaInicioValor.setOpaque(true);
-		lblFechaInicioValor.setBackground(Color.WHITE);
-		GridBagConstraints gbc_lblFechaInicioValor = new GridBagConstraints();
-		gbc_lblFechaInicioValor.fill = GridBagConstraints.BOTH;
-		gbc_lblFechaInicioValor.insets = new Insets(0, 4, 0, 5);
-		gbc_lblFechaInicioValor.gridx = 0;
-		gbc_lblFechaInicioValor.gridy = 0;
-		panFechaInicio.add(lblFechaInicioValor, gbc_lblFechaInicioValor);
-
-		btnSeleccionarFechaInicio = new JButton("Seleccionar");
-		GridBagConstraints gbc_btnSeleccionarInicio = new GridBagConstraints();
-		gbc_btnSeleccionarInicio.gridx = 1;
-		gbc_btnSeleccionarInicio.gridy = 0;
-		panFechaInicio.add(btnSeleccionarFechaInicio, gbc_btnSeleccionarInicio);
+		panEdicion.add(dcFechaInicio, gbc_panFechaInicio);
 
 		JLabel lblFechaFinEditor = new JLabel("FECHA FIN:");
 		lblFechaFinEditor.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
@@ -364,36 +347,20 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		gbc_lblFechaFinEditor.gridy = 3;
 		panEdicion.add(lblFechaFinEditor, gbc_lblFechaFinEditor);
 
-		JPanel panFechaFin = new JPanel();
+		dcFechaFin = new JDateChooser();
+		((JTextFieldDateEditor) dcFechaFin.getDateEditor()).setEditable(false);
+		;
+		((JTextFieldDateEditor) dcFechaFin.getDateEditor()).setFocusable(false);
+		((JTextFieldDateEditor) dcFechaFin.getDateEditor()).setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		((JTextFieldDateEditor) dcFechaFin.getDateEditor()).setDisabledTextColor(Color.BLACK);
+		((JTextFieldDateEditor) dcFechaFin.getDateEditor()).setEnabled(false);
 		GridBagConstraints gbc_panFechaFin = new GridBagConstraints();
 		gbc_panFechaFin.gridwidth = 3;
 		gbc_panFechaFin.insets = new Insets(0, 0, 5, 5);
 		gbc_panFechaFin.fill = GridBagConstraints.BOTH;
 		gbc_panFechaFin.gridx = 2;
 		gbc_panFechaFin.gridy = 3;
-		panEdicion.add(panFechaFin, gbc_panFechaFin);
-		GridBagLayout gbl_panFechaFin = new GridBagLayout();
-		gbl_panFechaFin.columnWidths = new int[] { 0, 0, 0 };
-		gbl_panFechaFin.rowHeights = new int[] { 0, 0 };
-		gbl_panFechaFin.columnWeights = new double[] { 1.0, 0.0, Double.MIN_VALUE };
-		gbl_panFechaFin.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-		panFechaFin.setLayout(gbl_panFechaFin);
-
-		lblFechaFinValor = new JLabel();
-		lblFechaFinValor.setOpaque(true);
-		lblFechaFinValor.setBackground(Color.WHITE);
-		GridBagConstraints gbc_lblFechaFinValor = new GridBagConstraints();
-		gbc_lblFechaFinValor.fill = GridBagConstraints.BOTH;
-		gbc_lblFechaFinValor.insets = new Insets(0, 4, 0, 5);
-		gbc_lblFechaFinValor.gridx = 0;
-		gbc_lblFechaFinValor.gridy = 0;
-		panFechaFin.add(lblFechaFinValor, gbc_lblFechaFinValor);
-
-		btnSeleccionarFechaFin = new JButton("Seleccionar");
-		GridBagConstraints gbc_btnSeleccionarFechaFin = new GridBagConstraints();
-		gbc_btnSeleccionarFechaFin.gridx = 1;
-		gbc_btnSeleccionarFechaFin.gridy = 0;
-		panFechaFin.add(btnSeleccionarFechaFin, gbc_btnSeleccionarFechaFin);
+		panEdicion.add(dcFechaFin, gbc_panFechaFin);
 
 		JLabel lblTelefonoEditor = new JLabel("PRECIO:");
 		lblTelefonoEditor.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
@@ -485,7 +452,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 			for (Actividad a : actividades) {
 				actividadesLabels.add(a.getNombre());
 			}
-			cboActividadesModel = new DefaultComboBoxModel<>(propiedadesLabels);
+			cboActividadesModel = new DefaultComboBoxModel<>(actividadesLabels);
 			cboActividades.setModel(cboActividadesModel);
 		}
 
@@ -513,10 +480,6 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 			clearFormData();
 		} else if (btnGuardar == e.getSource()) {
 			saveAlquiler();
-		} else if (btnSeleccionarFechaInicio == e.getSource()) {
-			lblFechaInicioValor.setText(new DatePicker(Window.getInstance()).setPickedDate());
-		} else if (btnSeleccionarFechaFin == e.getSource()) {
-			lblFechaFinValor.setText(new DatePicker(Window.getInstance()).setPickedDate());
 		}
 	}
 }
