@@ -43,8 +43,6 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 	private static int						MODE_NEW			= 0;
 	private static int						MODE_EDIT			= 1;
 
-	private Cliente							cliente;
-
 	private JButton							btnVolver;
 	private JButton							btnBorrar;
 	private JButton							btnNuevo;
@@ -74,7 +72,6 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 	public PanelAlquileres(Cliente cliente) {
 
-		this.cliente = cliente;
 		this.alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cliente.getDni());
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -253,6 +250,17 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 		cboPropiedades = new JComboBox<String>();
 		cboPropiedades.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		cboPropiedades.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actividades = ClientManager.getInstance().getActividadesByIdPropiedad(propiedades.get(cboPropiedades.getSelectedIndex()).getId());
+				Vector<String> actividadesLabels = new Vector<String>();
+				for (Actividad a : actividades) {
+					actividadesLabels.add(a.getNombre());
+				}
+				cboActividadesModel = new DefaultComboBoxModel<>(actividadesLabels);
+				cboActividades.setModel(cboActividadesModel);
+			}
+		});
 		GridBagConstraints gbc_cboPropiedades = new GridBagConstraints();
 		gbc_cboPropiedades.insets = new Insets(10, 0, 5, 5);
 		gbc_cboPropiedades.fill = GridBagConstraints.BOTH;
