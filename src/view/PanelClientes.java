@@ -507,7 +507,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 					}
 				} else if (!txtNombre.getText().isEmpty()) {
 					// Se filtra por nombre
-					if (txtNombre.getText().trim().toLowerCase().contains(c.getNombre().toLowerCase())) {
+					if (txtNombre.getText().trim().equals(c.getNombre())) {
 						clientesVisualizados.add(c);
 					}
 				} else {
@@ -523,7 +523,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 
 	public void updateData() {
 		modelTable.setDataVector(new String[clientesVisualizados.size()][header.length], header);
-		for (int i = 0; i < clientes.size(); i++) {
+		for (int i = 0; i < clientesVisualizados.size(); i++) {
 			// DNI
 			table.getModel().setValueAt(clientesVisualizados.get(i).getDNIChar(), i, 0);
 			// NOMBRE
@@ -555,6 +555,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 				clientesVisualizados.remove(selectedRow);
 				clientes.remove(aux);
 				updateData();
+				clearFormData();
 				JOptionPane.showMessageDialog(Window.getInstance(), "El cliente con DNI: " + c.getDNIChar() + " se ha eliminado correctamente.",
 						"Eliminado correctamente", JOptionPane.INFORMATION_MESSAGE);
 			} else {
@@ -569,7 +570,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 	public String validateCliente() {
 		String errorMessage = "";
 		// Se comprueba el DNI
-		if (txtDni.getText().length() != 8) {
+		if (txtDniEditor.getText().length() != 8) {
 			errorMessage += " - El DNI tiene que tener 8 d\u00edgitos.\n";
 		}
 
@@ -586,7 +587,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 		// Se comprueba el email 100
 		if (txtEmailEditor.getText().isEmpty()) {
 			errorMessage += " - El campo email del cliente es obligatorio.\n";
-		} else if (Cliente.validateEmail(txtEmailEditor.getText())) {
+		} else if (!Cliente.validateEmail(txtEmailEditor.getText())) {
 			errorMessage += " - El email introducido es incorrecto.\n";
 		}
 
@@ -615,13 +616,43 @@ public class PanelClientes extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(Window.getInstance(), "Error en los siguientes campos:\n" + errorMessage, "Error",
 					JOptionPane.ERROR_MESSAGE);
 		} else {
+			currentCliente = new Cliente();
 			currentCliente.setDni(Integer.parseInt(txtDniEditor.getText()));
 			currentCliente.setNombre(txtNombreEditor.getText().trim());
 			currentCliente.setApellido(txtApellidosEditor.getText().trim());
-			currentCliente.setEmail(txtApellidosEditor.getText().trim());
+			currentCliente.setEmail(txtEmailEditor.getText().trim());
 			currentCliente.setDireccion(txtDireccionEditor.getText().trim());
 			currentCliente.setTelefono(Integer.parseInt(txtTelefonoEditor.getText()));
 			currentCliente.setCodigoPostal(Integer.parseInt(txtCodPostalEditor.getText()));
+
+			if (mode == MODE_NEW) {
+				if (ClientManager.getInstance().saveCliente(currentCliente)) {
+					clientes.add(currentCliente);
+					mode = MODE_EDIT;
+					filterData();
+					JOptionPane.showMessageDialog(Window.getInstance(), "Cliente insertado correctamente.", "Informaci\u00f3n",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(Window.getInstance(),
+							"El cliente no se ha podido a\u00f1adir porque ya existe uno con el mismo DNI.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			} else if (mode == MODE_EDIT) {
+				if (ClientManager.getInstance().editCliente(currentCliente)) {
+					int i;
+					for (i = 0; i < clientes.size(); i++) {
+						if (clientes.get(i).getDni() == currentCliente.getDni()) {
+							break;
+						}
+					}
+					clientes.set(i, currentCliente);
+					filterData();
+					JOptionPane.showMessageDialog(Window.getInstance(), "Cliente editado correctamente.", "Informaci\u00f3n",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(Window.getInstance(), "Ha ocurrido un error al editar el cliente.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
 		}
 	}
 
@@ -633,6 +664,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 		txtDireccionEditor.setText("");
 		txtTelefonoEditor.setText("");
 		txtCodPostalEditor.setText("");
+		mode = MODE_NEW;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -647,26 +679,8 @@ public class PanelClientes extends JPanel implements ActionListener {
 			// TODO
 		} else if (btnNuevo == e.getSource()) {
 			clearFormData();
-			mode = MODE_NEW;
-			currentCliente = new Cliente();
 		} else if (btnGuardar == e.getSource()) {
-			if (mode == MODE_NEW) {
-				if (ClientManager.getInstance().saveCliente(currentCliente)) {
-					clientes.add(currentCliente);
-					mode = MODE_EDIT;
-					updateData();
-				} else {
-					JOptionPane.showMessageDialog(Window.getInstance(), "El cliente no se ha podido añadir porque ya existe uno con el mismo DNI.",
-							"Error", JOptionPane.ERROR_MESSAGE);
-				}
-			} else if (mode == MODE_EDIT) {
-				if (ClientManager.getInstance().editCliente(currentCliente)) {
-					loadData();
-				} else {
-					JOptionPane.showMessageDialog(Window.getInstance(), "Ha ocurrido un error al editar el cliente.", "Error",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			}
+			saveCliente();
 		}
 	}
 }
