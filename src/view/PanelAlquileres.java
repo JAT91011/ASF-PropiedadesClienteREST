@@ -31,6 +31,7 @@ import entities.Alquiler;
 import entities.Cliente;
 import entities.Propiedad;
 import utilities.ClientManager;
+import utilities.DatePicker;
 import view.components.TableModel;
 
 public class PanelAlquileres extends JPanel implements ActionListener {
@@ -68,6 +69,10 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 	private DefaultComboBoxModel<String>	cboActividadesModel;
 
 	private int								mode				= 0;
+
+	private JLabel							lblFechaInicioValor;
+
+	private JLabel							lblFechaFinValor;
 
 	public PanelAlquileres(Cliente cliente) {
 
@@ -334,7 +339,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		gbl_panFechaInicio.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		panFechaInicio.setLayout(gbl_panFechaInicio);
 
-		JLabel lblFechaInicioValor = new JLabel(" 08/04/2016");
+		lblFechaInicioValor = new JLabel();
 		lblFechaInicioValor.setOpaque(true);
 		lblFechaInicioValor.setBackground(Color.WHITE);
 		GridBagConstraints gbc_lblFechaInicioValor = new GridBagConstraints();
@@ -374,7 +379,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		gbl_panFechaFin.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
 		panFechaFin.setLayout(gbl_panFechaFin);
 
-		JLabel lblFechaFinValor = new JLabel(" 08/04/2016");
+		lblFechaFinValor = new JLabel();
 		lblFechaFinValor.setOpaque(true);
 		lblFechaFinValor.setBackground(Color.WHITE);
 		GridBagConstraints gbc_lblFechaFinValor = new GridBagConstraints();
@@ -410,6 +415,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		txtPrecio.setColumns(10);
 
 		updateData();
+		clearFormData();
 	}
 
 	public void updateData() {
@@ -486,21 +492,31 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		mode = MODE_NEW;
 	}
 
+	public String validateAlquiler() {
+		String errorMessage = "";
+
+		return errorMessage;
+	}
+
+	public void saveAlquiler() {
+
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (btnVolver == e.getSource()) {
 			Window.getInstance().setContainer(new PanelClientes());
 			((PanelClientes) Window.getInstance().getContentPane()).updateUI();
 		} else if (btnBorrar == e.getSource()) {
-
+			deleteAlquiler();
 		} else if (btnNuevo == e.getSource()) {
-
+			clearFormData();
 		} else if (btnGuardar == e.getSource()) {
-
+			saveAlquiler();
 		} else if (btnSeleccionarFechaInicio == e.getSource()) {
-
+			lblFechaInicioValor.setText(new DatePicker(Window.getInstance()).setPickedDate());
 		} else if (btnSeleccionarFechaFin == e.getSource()) {
-
+			lblFechaFinValor.setText(new DatePicker(Window.getInstance()).setPickedDate());
 		}
 	}
 }
