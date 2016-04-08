@@ -9,11 +9,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -21,35 +26,53 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import entities.Actividad;
+import entities.Alquiler;
 import entities.Cliente;
+import entities.Propiedad;
+import utilities.ClientManager;
 import view.components.TableModel;
 
 public class PanelAlquileres extends JPanel implements ActionListener {
 
-	private static final long	serialVersionUID	= 3716515640526061428L;
+	private static final long				serialVersionUID	= 3716515640526061428L;
 
-	private Cliente				cliente;
+	private static int						MODE_NEW			= 0;
+	private static int						MODE_EDIT			= 1;
 
-	private JButton				btnVolver;
-	private JButton				btnBorrar;
-	private JButton				btnNuevo;
-	private JButton				btnGuardar;
-	private JButton				btnSeleccionarFechaInicio;
-	private JButton				btnSeleccionarFechaFin;
+	private Cliente							cliente;
 
-	private JTextField			txtPrecio;
-	private JTable				table;
+	private JButton							btnVolver;
+	private JButton							btnBorrar;
+	private JButton							btnNuevo;
+	private JButton							btnGuardar;
+	private JButton							btnSeleccionarFechaInicio;
+	private JButton							btnSeleccionarFechaFin;
 
-	private TableModel			modelTable;
+	private JTextField						txtPrecio;
+	private JTable							table;
 
-	private String[]			header;
+	private TableModel						modelTable;
 
-	private JComboBox<String>	cboPropiedades;
-	private JComboBox<String>	cboActividad;
+	private String[]						header;
+
+	private JComboBox<String>				cboPropiedades;
+	private JComboBox<String>				cboActividades;
+
+	private ArrayList<Alquiler>				alquileres;
+
+	private ArrayList<Propiedad>			propiedades;
+	private ArrayList<Actividad>			actividades;
+
+	private DefaultComboBoxModel<String>	cboPropiedadesModel;
+	private DefaultComboBoxModel<String>	cboActividadesModel;
+
+	private int								mode				= 0;
 
 	public PanelAlquileres(Cliente cliente) {
 
 		this.cliente = cliente;
+		this.alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cliente.getDni());
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 20, 0, 0, 20, 0 };
@@ -277,15 +300,15 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		gbc_lblActividadEditor.gridy = 1;
 		panEdicion.add(lblActividadEditor, gbc_lblActividadEditor);
 
-		cboActividad = new JComboBox<String>();
-		cboActividad.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		cboActividades = new JComboBox<String>();
+		cboActividades.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_cboActividad = new GridBagConstraints();
 		gbc_cboActividad.gridwidth = 3;
 		gbc_cboActividad.insets = new Insets(0, 0, 5, 5);
 		gbc_cboActividad.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cboActividad.gridx = 2;
 		gbc_cboActividad.gridy = 1;
-		panEdicion.add(cboActividad, gbc_cboActividad);
+		panEdicion.add(cboActividades, gbc_cboActividad);
 
 		JLabel lblFechaInicioEditor = new JLabel("FECHA INICIO:");
 		lblFechaInicioEditor.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
@@ -385,6 +408,82 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		gbc_txtPrecio.gridy = 4;
 		panEdicion.add(txtPrecio, gbc_txtPrecio);
 		txtPrecio.setColumns(10);
+
+		updateData();
+	}
+
+	public void updateData() {
+
+		header[0] = "Propiedad";
+		header[1] = "Actividad";
+		header[2] = "Fcha. Inicio";
+		header[3] = "Fcha. Fin";
+		header[4] = "Precio";
+
+		modelTable.setDataVector(new String[alquileres.size()][header.length], header);
+		for (int i = 0; i < alquileres.size(); i++) {
+			// PROPIEDAD
+			table.getModel().setValueAt(alquileres.get(i).getPropiedad().getNombre(), i, 0);
+			// NOMBRE
+			table.getModel().setValueAt(alquileres.get(i).getActividad().getNombre(), i, 1);
+			// FECHA INICIO
+			String fechaInicio = new SimpleDateFormat("dd-MM-yyyy").format(alquileres.get(i).getFechaInicio());
+			table.getModel().setValueAt(fechaInicio, i, 2);
+			// FECHA FIN
+			String fechaFin = new SimpleDateFormat("dd-MM-yyyy").format(alquileres.get(i).getFechaFin());
+			table.getModel().setValueAt(fechaFin, i, 3);
+			// PRECIO
+			table.getModel().setValueAt(alquileres.get(i).getPrecio() + " €", i, 4);
+		}
+	}
+
+	public void deleteAlquiler() {
+		int selectedRow = table.getSelectedRow();
+		if (selectedRow >= 0) {
+			Alquiler a = alquileres.get(selectedRow);
+			if (ClientManager.getInstance().deleteAlquiler(a.getIdAlquiler())) {
+				int aux = 0;
+				for (aux = 0; aux < alquileres.size(); aux++) {
+					if (alquileres.get(aux).getIdAlquiler() == a.getIdAlquiler()) {
+						break;
+					}
+				}
+				alquileres.remove(selectedRow);
+				updateData();
+				clearFormData();
+				JOptionPane.showMessageDialog(Window.getInstance(), "El alquiler se ha eliminado correctamente.", "Eliminado correctamente",
+						JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(Window.getInstance(), "Ha ocurrido un error al eliminar el alquiler.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		} else {
+			JOptionPane.showMessageDialog(Window.getInstance(), "Selecciona un alquiler para poder eliminarlo", "Alerta",
+					JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
+	public void clearFormData() {
+
+		propiedades = ClientManager.getInstance().getAllPropiedades();
+		Vector<String> propiedadesLabels = new Vector<String>();
+		for (Propiedad p : propiedades) {
+			propiedadesLabels.add(p.getNombre());
+		}
+		cboPropiedadesModel = new DefaultComboBoxModel<>(propiedadesLabels);
+		cboPropiedades.setModel(cboPropiedadesModel);
+
+		if (propiedades.size() > 0) {
+			actividades = ClientManager.getInstance().getActividadesByIdPropiedad(propiedades.get(0).getId());
+			Vector<String> actividadesLabels = new Vector<String>();
+			for (Actividad a : actividades) {
+				actividadesLabels.add(a.getNombre());
+			}
+			cboActividadesModel = new DefaultComboBoxModel<>(propiedadesLabels);
+			cboActividades.setModel(cboActividadesModel);
+		}
+
+		mode = MODE_NEW;
 	}
 
 	@Override
