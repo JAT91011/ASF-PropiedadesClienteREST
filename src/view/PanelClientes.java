@@ -476,11 +476,12 @@ public class PanelClientes extends JPanel implements ActionListener {
 	public void filterData() {
 		// TODO visualizar los clientes con el dni y nombre introducidos
 		if (clientes != null && clientes.size() > 0) {
-			clientesVisualizados = (ArrayList<Cliente>) clientes.clone();
+			clientesVisualizados = new ArrayList<Cliente>();
 			for (Cliente c : clientes) {
 				if (!txtDni.getText().isEmpty() && !txtNombre.getText().isEmpty()) {
 					// Se filtra por dni y por nombre
-					if (Integer.parseInt(txtDni.getText()) == c.getDni() && txtNombre.getText().trim().equals(c.getNombre())) {
+					if (Integer.parseInt(txtDni.getText()) == c.getDni()
+							&& txtNombre.getText().trim().toLowerCase().contains(c.getNombre().toLowerCase())) {
 						clientesVisualizados.add(c);
 					}
 				} else if (!txtDni.getText().isEmpty()) {
@@ -490,9 +491,11 @@ public class PanelClientes extends JPanel implements ActionListener {
 					}
 				} else if (!txtNombre.getText().isEmpty()) {
 					// Se filtra por nombre
-					if (txtNombre.getText().trim().equals(c.getNombre())) {
+					if (txtNombre.getText().trim().toLowerCase().contains(c.getNombre().toLowerCase())) {
 						clientesVisualizados.add(c);
 					}
+				} else {
+					clientesVisualizados.add(c);
 				}
 			}
 			updateData();
