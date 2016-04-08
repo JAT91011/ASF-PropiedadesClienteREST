@@ -238,6 +238,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 		panBotoneraTabla.add(btnBorrar, gbc_btnBorrar);
 
 		btnVerAlquileres = new JButton("VER ALQUILERES");
+		btnVerAlquileres.addActionListener(this);
 		btnVerAlquileres.setIcon(new ImageIcon("icons/see-icon.png"));
 		btnVerAlquileres.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_btnVerAlquileres = new GridBagConstraints();
@@ -305,6 +306,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 		panel.setLayout(gbl_panel);
 
 		btnNuevo = new JButton("NUEVO");
+		btnNuevo.addActionListener(this);
 		btnNuevo.setIcon(new ImageIcon("icons/add-icon.png"));
 		btnNuevo.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_btnNuevo = new GridBagConstraints();
@@ -314,6 +316,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 		panel.add(btnNuevo, gbc_btnNuevo);
 
 		btnGuardar = new JButton("GUARDAR");
+		btnGuardar.addActionListener(this);
 		btnGuardar.setIcon(new ImageIcon("icons/save-icon.png"));
 		btnGuardar.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_btnGuardar = new GridBagConstraints();
