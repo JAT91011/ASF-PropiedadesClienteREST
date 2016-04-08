@@ -228,6 +228,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 		panBotoneraTabla.setLayout(gbl_panBotoneraTabla);
 
 		btnBorrar = new JButton("ELIMINAR");
+		btnBorrar.addActionListener(this);
 		btnBorrar.setIcon(new ImageIcon("icons/remove-icon.png"));
 		btnBorrar.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_btnBorrar = new GridBagConstraints();
