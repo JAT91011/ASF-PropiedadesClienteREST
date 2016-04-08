@@ -3,6 +3,7 @@ package utilities;
 import java.util.ArrayList;
 
 import entities.Actividad;
+import entities.Alquiler;
 import entities.Cliente;
 import entities.Propiedad;
 
@@ -34,7 +35,7 @@ public class Test {
 		}
 
 		// OBTENEMOS TODOS LOS CLIENTES DE LA BASE DE DATOS Y LOS MOSTRAMOS
-		System.out.println("\nVISUALIZAMOS TODOS LOS CLIENTES Y SUS ALQUILERES DE LA BASE DE DATOS");
+		System.out.println("\nVISUALIZAMOS TODOS LOS CLIENTES DE LA BASE DE DATOS");
 		ArrayList<Cliente> clientes = ClientManager.getInstance().getAllClientes();
 		for (Cliente c : clientes) {
 			System.out.println(c.toString());
@@ -91,5 +92,59 @@ public class Test {
 		System.out.println("\nVISUALIZAMOS LA PROPIEDAD CON ID 1");
 		Propiedad propiedad = ClientManager.getInstance().getPropiedadById(1);
 		System.out.println(propiedad.toString());
+
+		// ALQUILERES
+
+		// INSERTAR ALQUILERES
+		/*
+		System.out.println("\nINSERTAMOS TRES ALQUILERES DE PRUEBA");
+		java.sql.Date date = new java.sql.Date(new java.util.Date(2016, 01, 01).getDate());
+		Alquiler alq1 = new Alquiler(cl1, new Actividad(1, "Jugar a futbol"), new Propiedad(1, "Polideportivo Karrantza"), date, date, 500);
+		Alquiler alq2 = new Alquiler(cl2, new Actividad(1, "Jugar a futbol"), new Propiedad(1, "Polideportivo Karrantza"), date, date, 700);
+		Alquiler alq3 = new Alquiler(cl1, new Actividad(2, "Jugar a baloncesto"), new Propiedad(2, "Cancha de baloncesto Karrantza"), date, date,
+				450);
+
+		if (ClientManager.getInstance().saveAlquiler(alq1)) {
+			System.out.println("Insertado correctamente");
+		} else {
+			System.out.println("Ya existe");
+		}
+		if (ClientManager.getInstance().saveAlquiler(alq2)) {
+			System.out.println("Insertado correctamente");
+		} else {
+			System.out.println("Ya existe");
+		}
+		if (ClientManager.getInstance().saveAlquiler(alq3)) {
+			System.out.println("Insertado correctamente");
+		} else {
+			System.out.println("Ya existe");
+		}
+		*/
+		// OBTENEMOS TODOS LOS ALQUILERES DEL CLIENTE 1 Y LOS MOSTRAMOS
+		System.out.println("\nVISUALIZAMOS TODOS LOS ALQUILERES DEL CLIENTE 1 DE LA BASE DE DATOS");
+		ArrayList<Alquiler> alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cl1.getDni());
+		for (Alquiler a : alquileres) {
+			System.out.println(a.toString());
+		}
+		
+		
+		// EDITAMOS EL PRIMER ALQUILER DEL CLIENTE 1
+		System.out.println("\nEDITAMOS EL PRIMER ALQUILER DEL CLIENTE 1");
+		Alquiler alquilerEditado = alquileres.get(0);
+		alquilerEditado.setPrecio(9999);
+		System.out.println("Alquiler: " + alquilerEditado.toString());
+		if (ClientManager.getInstance().editAlquiler(alquilerEditado)) {
+			System.out.println("Alquiler editado.");
+		} else {
+			System.out.println("No se ha podido editar el alquiler");
+		}
+
+		// BORRAMOS EL SEGUNDO ALQUILER DEL CLIENTE 1
+		System.out.println("\nELIMINAMOS EL SEGUNDO ALQUILER DEL CLIENTE 1");
+		if (ClientManager.getInstance().deleteCliente(alquileres.get(1).getIdAlquiler())) {
+			System.out.println("Alquiler '" + alquileres.get(1).getIdAlquiler() + "' borrado correctamente de la base de datos.");
+		} else {
+			System.out.println("El alquiler '" + alquileres.get(1).getIdAlquiler() + "' no se ha borrado de la base de datos.");
+		}
 	}
 }

@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Alquiler {
 
-	private int			id;
+	private int			idAlquiler;
 	private Cliente		cliente;
 	private Actividad	actividad;
 	private Propiedad	propiedad;
@@ -19,16 +19,7 @@ public class Alquiler {
 
 	}
 
-	public Alquiler(Actividad actividad, Propiedad propiedad, Date fechaInicio, Date fechaFin, double precio) {
-		this.actividad = actividad;
-		this.propiedad = propiedad;
-		this.fechaInicio = fechaInicio;
-		this.fechaFin = fechaFin;
-		this.precio = precio;
-	}
-
-	public Alquiler(int id, Cliente cliente, Actividad actividad, Propiedad propiedad, Date fechaInicio, Date fechaFin, double precio) {
-		this.id = id;
+	public Alquiler(Cliente cliente, Actividad actividad, Propiedad propiedad, Date fechaInicio, Date fechaFin, double precio) {
 		this.cliente = cliente;
 		this.actividad = actividad;
 		this.propiedad = propiedad;
@@ -37,12 +28,22 @@ public class Alquiler {
 		this.precio = precio;
 	}
 
-	public int getId() {
-		return id;
+	public Alquiler(int idAlquiler, Cliente cliente, Actividad actividad, Propiedad propiedad, Date fechaInicio, Date fechaFin, double precio) {
+		this.idAlquiler = idAlquiler;
+		this.cliente = cliente;
+		this.actividad = actividad;
+		this.propiedad = propiedad;
+		this.fechaInicio = fechaInicio;
+		this.fechaFin = fechaFin;
+		this.precio = precio;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public int getIdAlquiler() {
+		return idAlquiler;
+	}
+
+	public void setIdAlquiler(int idAlquiler) {
+		this.idAlquiler = idAlquiler;
 	}
 
 	public Cliente getCliente() {
@@ -95,7 +96,7 @@ public class Alquiler {
 
 	@Override
 	public String toString() {
-		return "Alquiler [id=" + id + ", cliente=" + cliente + ", actividad=" + actividad + ", propiedad=" + propiedad + ", fechaInicio="
-				+ fechaInicio + ", fechaFin=" + fechaFin + ", precio=" + precio + "]";
+		return "Alquiler [idAlquiler=" + idAlquiler + ", cliente=" + cliente + ", actividad=" + actividad + ", propiedad=" + propiedad
+				+ ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ", precio=" + precio + "]";
 	}
 }

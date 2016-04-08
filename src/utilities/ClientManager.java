@@ -13,6 +13,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 import entities.Actividad;
+import entities.Alquiler;
 import entities.Cliente;
 import entities.Propiedad;
 
@@ -74,6 +75,42 @@ public class ClientManager {
 			ClientResponse r = e.getResponse();
 			System.out.println("clients.{id}.DEL.status: " + r.getStatus());
 			System.out.println("clients.{id}.DEL.entity: " + r.getEntity(String.class));
+			return false;
+		}
+	}
+
+	// ALQUILERES
+	public ArrayList<Alquiler> getAlquileresByDniCliente(final int dni) {
+		Alquiler[] array = service.path("rest").path("alquileres").path("cliente").path(Integer.toString(dni)).get(Alquiler[].class);
+		return new ArrayList<Alquiler>(Arrays.asList(array));
+	}
+
+	public boolean saveAlquiler(final Alquiler alquiler) {
+		try {
+			ClientResponse response = service.path("rest").path("alquileres").type(MediaType.APPLICATION_JSON).post(ClientResponse.class, alquiler);
+			return response.getStatus() == SUCCESS_CODE ? true : false;
+		} catch (UniformInterfaceException e) {
+			ClientResponse r = e.getResponse();
+			System.out.println("alquileres.{id}.DEL.status: " + r.getStatus());
+			System.out.println("alquileres.{id}.DEL.entity: " + r.getEntity(String.class));
+			return false;
+		}
+	}
+
+	public boolean editAlquiler(final Alquiler alquiler) {
+		ClientResponse response = service.path("rest").path("alquileres").path("alquiler").path(Integer.toString(alquiler.getIdAlquiler()))
+				.type(MediaType.APPLICATION_JSON).put(ClientResponse.class, alquiler);
+		return response.getStatus() == EDIT_SUCCESS_CODE ? true : false;
+	}
+
+	public boolean deleteAlquiler(final int id) {
+		try {
+			service.path("rest").path("alquileres").path("alquiler").path(Integer.toString(id)).delete();
+			return true;
+		} catch (UniformInterfaceException e) {
+			ClientResponse r = e.getResponse();
+			System.out.println("alquileres.{id}.DEL.status: " + r.getStatus());
+			System.out.println("alquileres.{id}.DEL.entity: " + r.getEntity(String.class));
 			return false;
 		}
 	}
