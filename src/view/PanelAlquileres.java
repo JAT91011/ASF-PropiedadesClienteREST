@@ -506,7 +506,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (btnVolver == e.getSource()) {
 			Window.getInstance().setContainer(new PanelClientes());
-			((PanelClientes) Window.getInstance().getContentPane()).updateUI();
+			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		} else if (btnBorrar == e.getSource()) {
 			deleteAlquiler();
 		} else if (btnNuevo == e.getSource()) {
