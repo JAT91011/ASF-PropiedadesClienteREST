@@ -70,6 +70,8 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 	private int								mode				= 0;
 
+	private Alquiler						currentAlquiler;
+
 	public PanelAlquileres(Cliente cliente) {
 
 		this.alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cliente.getDni());
@@ -82,6 +84,9 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		setLayout(gridBagLayout);
 
 		btnVolver = new JButton();
+		btnVolver.setBorderPainted(false);
+		btnVolver.setContentAreaFilled(false);
+		btnVolver.setFocusPainted(false);
 		btnVolver.setIcon(new ImageIcon("icons/back-icon.png"));
 		btnVolver.addActionListener(this);
 		btnVolver.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
@@ -189,8 +194,39 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		table.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent me) {
 				int row = table.getSelectedRow();
+				Alquiler alquiler = alquileres.get(row);
 				if (row >= 0) {
+					mode = MODE_EDIT;
 
+					// Se selecciona la propiedad
+					int indexPropiedad;
+					for (indexPropiedad = 0; indexPropiedad < propiedades.size(); indexPropiedad++) {
+						if (propiedades.get(indexPropiedad).getId() == alquiler.getPropiedad().getId()) {
+							break;
+						}
+					}
+					cboPropiedades.setSelectedIndex(indexPropiedad);
+
+					// Se selecciona la actividad
+					actividades = ClientManager.getInstance().getActividadesByIdPropiedad(propiedades.get(indexPropiedad).getId());
+					Vector<String> actividadesLabels = new Vector<String>();
+					for (Actividad a : actividades) {
+						actividadesLabels.add(a.getNombre());
+					}
+					cboActividadesModel = new DefaultComboBoxModel<>(actividadesLabels);
+					int indexActividad;
+					for (indexActividad = 0; indexActividad < actividades.size(); indexActividad++) {
+						if (actividades.get(indexActividad).getId() == alquiler.getActividad().getId()) {
+							break;
+						}
+					}
+					cboActividades.setSelectedIndex(indexActividad);
+
+					dcFechaInicio.setDate(alquiler.getFechaInicio());
+
+					dcFechaFin.setDate(alquiler.getFechaFin());
+
+					txtPrecio.setText(Double.toString(alquiler.getPrecio()));
 				}
 			}
 		});
@@ -470,11 +506,57 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 	public String validateAlquiler() {
 		String errorMessage = "";
 
+		if (dcFechaInicio.getDate() == null) {
+			errorMessage += " - La fecha inicio del alquiler es obligatoria.\n";
+		}
+
+		if (dcFechaFin.getDate() == null) {
+			errorMessage += " - La fecha fin del alquiler es obligatoria.\n";
+		}
+
 		return errorMessage;
 	}
 
 	public void saveAlquiler() {
+		String errorMessage = validateAlquiler();
+		if (!errorMessage.isEmpty()) {
+			// Error en algun campo
+			JOptionPane.showMessageDialog(Window.getInstance(), "Error en los siguientes campos:\n" + errorMessage, "Error",
+					JOptionPane.ERROR_MESSAGE);
+		} else {
+			currentAlquiler = new Alquiler();
+			currentAlquiler.setPropiedad(propiedades.get(cboPropiedades.getSelectedIndex()));
+			currentAlquiler.setActividad(actividades.get(cboActividades.getSelectedIndex()));
+			currentAlquiler.setFechaInicio(dcFechaInicio.getDate());
+			currentAlquiler.setFechaFin(dcFechaFin.getDate());
+			currentAlquiler.setPrecio(Double.parseDouble(txtPrecio.getText()));
 
+			if (mode == MODE_NEW) {
+				if (ClientManager.getInstance().saveAlquiler(currentAlquiler)) {
+					alquileres.add(currentAlquiler);
+					mode = MODE_EDIT;
+					updateData();
+					JOptionPane.showMessageDialog(Window.getInstance(), "Alquiler insertado correctamente.", "Informaci\u00f3n",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			} else if (mode == MODE_EDIT) {
+				if (ClientManager.getInstance().editAlquiler(currentAlquiler)) {
+					int i;
+					for (i = 0; i < alquileres.size(); i++) {
+						if (alquileres.get(i).getIdAlquiler() == currentAlquiler.getIdAlquiler()) {
+							break;
+						}
+					}
+					alquileres.set(i, currentAlquiler);
+					updateData();
+					JOptionPane.showMessageDialog(Window.getInstance(), "Alquiler editado correctamente.", "Informaci\u00f3n",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(Window.getInstance(), "Ha ocurrido un error al editar el alquiler.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
 	}
 
 	@Override
