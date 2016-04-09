@@ -548,6 +548,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 					alquileres.add(currentAlquiler);
 					mode = MODE_EDIT;
 					updateData();
+					table.setRowSelectionInterval(alquileres.size() - 1, alquileres.size() - 1);
 					JOptionPane.showMessageDialog(Window.getInstance(), "Alquiler insertado correctamente.", "Informaci\u00f3n",
 							JOptionPane.INFORMATION_MESSAGE);
 				}
