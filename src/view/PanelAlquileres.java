@@ -73,7 +73,11 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 	private Alquiler						currentAlquiler;
 
+	private Cliente							cliente;
+
 	public PanelAlquileres(Cliente cliente) {
+
+		this.cliente = cliente;
 
 		this.alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cliente.getDni());
 
@@ -532,6 +536,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 					JOptionPane.ERROR_MESSAGE);
 		} else {
 			currentAlquiler = new Alquiler();
+			currentAlquiler.setCliente(cliente);
 			currentAlquiler.setPropiedad(propiedades.get(cboPropiedades.getSelectedIndex()));
 			currentAlquiler.setActividad(actividades.get(cboActividades.getSelectedIndex()));
 			currentAlquiler.setFechaInicio(dcFechaInicio.getDate());
