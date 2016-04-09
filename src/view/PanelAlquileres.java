@@ -7,6 +7,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
@@ -123,7 +125,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		gbc_lblDni.gridy = 0;
 		panCliente.add(lblDni, gbc_lblDni);
 
-		JLabel lblDniValue = new JLabel(Integer.toString(cliente.getDni()));
+		JLabel lblDniValue = new JLabel(cliente.getDNIChar());
 		lblDniValue.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		lblDniValue.setHorizontalAlignment(SwingConstants.RIGHT);
 		GridBagConstraints gbc_lblDniValue = new GridBagConstraints();
@@ -410,16 +412,27 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		gbc_panFechaFin.gridy = 3;
 		panEdicion.add(dcFechaFin, gbc_panFechaFin);
 
-		JLabel lblTelefonoEditor = new JLabel("PRECIO:");
-		lblTelefonoEditor.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
+		JLabel lblPrecioEditor = new JLabel("PRECIO (\u20ac):");
+		lblPrecioEditor.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_lblTelefonoEditor = new GridBagConstraints();
 		gbc_lblTelefonoEditor.anchor = GridBagConstraints.WEST;
 		gbc_lblTelefonoEditor.insets = new Insets(0, 0, 10, 5);
 		gbc_lblTelefonoEditor.gridx = 1;
 		gbc_lblTelefonoEditor.gridy = 4;
-		panEdicion.add(lblTelefonoEditor, gbc_lblTelefonoEditor);
+		panEdicion.add(lblPrecioEditor, gbc_lblTelefonoEditor);
 
 		txtPrecio = new JTextField();
+		txtPrecio.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char ch = e.getKeyChar();
+				if ((ch < '0' || ch > '9') && ch != '.') {
+					e.consume();
+				} else if (ch == '.' && (txtPrecio.getText().contains(".") || txtPrecio.getText().length() == 0)) {
+					e.consume();
+				}
+			}
+		});
 		txtPrecio.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		GridBagConstraints gbc_txtPrecio = new GridBagConstraints();
 		gbc_txtPrecio.insets = new Insets(0, 0, 10, 5);
