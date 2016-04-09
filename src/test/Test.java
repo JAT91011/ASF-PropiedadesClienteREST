@@ -1,4 +1,4 @@
-package utilities;
+package test;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +7,7 @@ import entities.Actividad;
 import entities.Alquiler;
 import entities.Cliente;
 import entities.Propiedad;
+import utilities.ClientManager;
 
 public class Test {
 
