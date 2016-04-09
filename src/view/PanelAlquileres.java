@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
@@ -260,7 +261,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		panBotoneraTabla.add(btnBorrar, gbc_btnBorrar);
 
 		JPanel panEdicion = new JPanel();
-		panEdicion.setBorder(new TitledBorder(null, "Edición", TitledBorder.ABOVE_TOP, TitledBorder.ABOVE_TOP, null, null));
+		panEdicion.setBorder(new TitledBorder(null, "Edici\u00f3n", TitledBorder.ABOVE_TOP, TitledBorder.ABOVE_TOP, null, null));
 		GridBagConstraints gbc_panEdicion = new GridBagConstraints();
 		gbc_panEdicion.gridwidth = 2;
 		gbc_panEdicion.insets = new Insets(0, 0, 5, 5);
@@ -450,7 +451,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 			String fechaFin = new SimpleDateFormat("dd-MM-yyyy").format(alquileres.get(i).getFechaFin());
 			table.getModel().setValueAt(fechaFin, i, 3);
 			// PRECIO
-			table.getModel().setValueAt(alquileres.get(i).getPrecio() + " €", i, 4);
+			table.getModel().setValueAt(alquileres.get(i).getPrecio() + " \u20ac", i, 4);
 		}
 	}
 
@@ -499,6 +500,12 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 			cboActividadesModel = new DefaultComboBoxModel<>(actividadesLabels);
 			cboActividades.setModel(cboActividadesModel);
 		}
+
+		dcFechaInicio.setDate(new Date());
+
+		dcFechaFin.setDate(new Date());
+
+		txtPrecio.setText("");
 
 		mode = MODE_NEW;
 	}
