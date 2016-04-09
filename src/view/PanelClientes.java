@@ -630,6 +630,15 @@ public class PanelClientes extends JPanel implements ActionListener {
 					clientes.add(currentCliente);
 					mode = MODE_EDIT;
 					filterData();
+					int i;
+					for (i = 0; i < clientesVisualizados.size(); i++) {
+						if (clientesVisualizados.get(i).getDni() == currentCliente.getDni()) {
+							break;
+						}
+					}
+					if (i < clientesVisualizados.size()) {
+						table.setRowSelectionInterval(i, i);
+					}
 					JOptionPane.showMessageDialog(Window.getInstance(), "Cliente insertado correctamente.", "Informaci\u00f3n",
 							JOptionPane.INFORMATION_MESSAGE);
 				} else {
@@ -646,6 +655,14 @@ public class PanelClientes extends JPanel implements ActionListener {
 					}
 					clientes.set(i, currentCliente);
 					filterData();
+					for (i = 0; i < clientesVisualizados.size(); i++) {
+						if (clientesVisualizados.get(i).getDni() == currentCliente.getDni()) {
+							break;
+						}
+					}
+					if (i < clientesVisualizados.size()) {
+						table.setRowSelectionInterval(i, i);
+					}
 					JOptionPane.showMessageDialog(Window.getInstance(), "Cliente editado correctamente.", "Informaci\u00f3n",
 							JOptionPane.INFORMATION_MESSAGE);
 				} else {

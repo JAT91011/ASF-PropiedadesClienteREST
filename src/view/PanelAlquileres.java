@@ -72,7 +72,6 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 	private int								mode				= 0;
 
 	private Alquiler						currentAlquiler;
-
 	private Cliente							cliente;
 
 	public PanelAlquileres(Cliente cliente) {
@@ -125,6 +124,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		panCliente.add(lblDni, gbc_lblDni);
 
 		JLabel lblDniValue = new JLabel(Integer.toString(cliente.getDni()));
+		lblDniValue.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		lblDniValue.setHorizontalAlignment(SwingConstants.RIGHT);
 		GridBagConstraints gbc_lblDniValue = new GridBagConstraints();
 		gbc_lblDniValue.fill = GridBagConstraints.HORIZONTAL;
@@ -143,6 +143,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		panCliente.add(lblNombre, gbc_lblNombre);
 
 		JLabel lblNombreValue = new JLabel(cliente.getNombre());
+		lblNombreValue.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		lblNombreValue.setHorizontalAlignment(SwingConstants.RIGHT);
 		GridBagConstraints gbc_lblNombreValue = new GridBagConstraints();
 		gbc_lblNombreValue.anchor = GridBagConstraints.EAST;
@@ -434,8 +435,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 	public void updateData() {
 
-		this.alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cliente.getDni());
-
+		alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cliente.getDni());
 		modelTable.setDataVector(new String[alquileres.size()][header.length], header);
 		for (int i = 0; i < alquileres.size(); i++) {
 			// PROPIEDAD
@@ -519,6 +519,16 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 			errorMessage += " - La fecha fin del alquiler es obligatoria.\n";
 		}
 
+		if (dcFechaInicio.getDate() != null && dcFechaFin.getDate() != null) {
+			if (dcFechaFin.getDate().before(dcFechaInicio.getDate())) {
+				errorMessage += " - La fecha de inicio tiene que ser igual o anterior a la fecha fin.\n";
+			}
+		}
+
+		if (cboActividades.getSelectedIndex() < 0 || actividades.size() == 0) {
+			errorMessage += " - La actividad es obligatoria.\n";
+		}
+
 		return errorMessage;
 	}
 
@@ -556,6 +566,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 					}
 					alquileres.set(i, currentAlquiler);
 					updateData();
+					table.setRowSelectionInterval(i, i);
 					JOptionPane.showMessageDialog(Window.getInstance(), "Alquiler editado correctamente.", "Informaci\u00f3n",
 							JOptionPane.INFORMATION_MESSAGE);
 				} else {
