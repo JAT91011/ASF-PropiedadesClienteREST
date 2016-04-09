@@ -79,8 +79,6 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 		this.cliente = cliente;
 
-		this.alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cliente.getDni());
-
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 20, 0, 0, 20, 0 };
 		gridBagLayout.rowHeights = new int[] { 20, 0, 0, 0, 20, 0 };
@@ -436,11 +434,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 	public void updateData() {
 
-		header[0] = "Propiedad";
-		header[1] = "Actividad";
-		header[2] = "Fcha. Inicio";
-		header[3] = "Fcha. Fin";
-		header[4] = "Precio";
+		this.alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cliente.getDni());
 
 		modelTable.setDataVector(new String[alquileres.size()][header.length], header);
 		for (int i = 0; i < alquileres.size(); i++) {
@@ -545,7 +539,6 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 			if (mode == MODE_NEW) {
 				if (ClientManager.getInstance().saveAlquiler(currentAlquiler)) {
-					alquileres.add(currentAlquiler);
 					mode = MODE_EDIT;
 					updateData();
 					table.setRowSelectionInterval(alquileres.size() - 1, alquileres.size() - 1);
@@ -553,8 +546,8 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 							JOptionPane.INFORMATION_MESSAGE);
 				}
 			} else if (mode == MODE_EDIT) {
+				currentAlquiler.setIdAlquiler(alquileres.get(table.getSelectedRow()).getIdAlquiler());
 				if (ClientManager.getInstance().editAlquiler(currentAlquiler)) {
-					currentAlquiler.setIdAlquiler(alquileres.get(table.getSelectedRow()).getIdAlquiler());
 					int i;
 					for (i = 0; i < alquileres.size(); i++) {
 						if (alquileres.get(i).getIdAlquiler() == currentAlquiler.getIdAlquiler()) {
