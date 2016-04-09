@@ -673,6 +673,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 			Cliente c = clientesVisualizados.get(selectedRow);
 			PanelAlquileres panAlquileres = new PanelAlquileres(c);
 			Window.getInstance().setContainer(panAlquileres);
+			Window.getInstance().setTitle("Alquileres de: " + c.getNombre().toUpperCase() + " " + c.getApellido().toUpperCase());
 		} else {
 			JOptionPane.showMessageDialog(Window.getInstance(), "Selecciona un cliente para poder ver sus alquileres", "Alerta",
 					JOptionPane.WARNING_MESSAGE);

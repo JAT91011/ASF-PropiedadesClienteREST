@@ -17,9 +17,9 @@ public class Window extends JFrame {
 		super();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setIconImage(null);
-		setSize(400, 700);
+		setSize(450, 700);
 		setIconImage((new ImageIcon("icons/app-icon.png")).getImage());
-		setMinimumSize(new Dimension(700, 500));
+		setMinimumSize(new Dimension(450, 700));
 		setTitle("Listado clientes");
 		setLocationRelativeTo(null);
 	}

@@ -537,6 +537,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		} else {
 			currentAlquiler = new Alquiler();
 			currentAlquiler.setCliente(cliente);
+			currentAlquiler.setIdAlquiler(alquileres.get(table.getSelectedRow()).getIdAlquiler());
 			currentAlquiler.setPropiedad(propiedades.get(cboPropiedades.getSelectedIndex()));
 			currentAlquiler.setActividad(actividades.get(cboActividades.getSelectedIndex()));
 			currentAlquiler.setFechaInicio(dcFechaInicio.getDate());
@@ -576,6 +577,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		if (btnVolver == e.getSource()) {
 			Window.getInstance().setContainer(new PanelClientes());
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
+			Window.getInstance().setTitle("Listado clientes");
 		} else if (btnBorrar == e.getSource()) {
 			deleteAlquiler();
 		} else if (btnNuevo == e.getSource()) {
