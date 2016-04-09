@@ -537,7 +537,6 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		} else {
 			currentAlquiler = new Alquiler();
 			currentAlquiler.setCliente(cliente);
-			currentAlquiler.setIdAlquiler(alquileres.get(table.getSelectedRow()).getIdAlquiler());
 			currentAlquiler.setPropiedad(propiedades.get(cboPropiedades.getSelectedIndex()));
 			currentAlquiler.setActividad(actividades.get(cboActividades.getSelectedIndex()));
 			currentAlquiler.setFechaInicio(dcFechaInicio.getDate());
@@ -554,6 +553,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 				}
 			} else if (mode == MODE_EDIT) {
 				if (ClientManager.getInstance().editAlquiler(currentAlquiler)) {
+					currentAlquiler.setIdAlquiler(alquileres.get(table.getSelectedRow()).getIdAlquiler());
 					int i;
 					for (i = 0; i < alquileres.size(); i++) {
 						if (alquileres.get(i).getIdAlquiler() == currentAlquiler.getIdAlquiler()) {
