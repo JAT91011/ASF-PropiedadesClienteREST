@@ -208,7 +208,6 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 					int indexPropiedad;
 					for (indexPropiedad = 0; indexPropiedad < propiedades.size(); indexPropiedad++) {
 						if (propiedades.get(indexPropiedad).getIdPropiedad() == alquiler.getPropiedad().getIdPropiedad()) {
-							System.out.println(propiedades.get(indexPropiedad).getNombre());
 							break;
 						}
 					}
@@ -216,9 +215,6 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 					// Se selecciona la actividad
 					actividades = ClientManager.getInstance().getActividadesByIdPropiedad(propiedades.get(indexPropiedad).getIdPropiedad());
-					System.out.println(propiedades.size());
-					System.out.println(propiedades.get(indexPropiedad).getIdPropiedad());
-					System.out.println(actividades.size());
 					Vector<String> actividadesLabels = new Vector<String>();
 					for (CustomActividad a : actividades) {
 						actividadesLabels.add(a.getNombre());
@@ -545,6 +541,10 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 		if (cboActividades.getSelectedIndex() < 0 || actividades.size() == 0) {
 			errorMessage += " - La actividad es obligatoria.\n";
+		}
+
+		if (txtPrecio.getText().trim().isEmpty()) {
+			errorMessage += " - El precio es obligatorio.\n";
 		}
 
 		return errorMessage;

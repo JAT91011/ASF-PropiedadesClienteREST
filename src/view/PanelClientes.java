@@ -29,40 +29,40 @@ import view.components.TableModel;
 
 public class PanelClientes extends JPanel implements ActionListener {
 
-	private static final long	serialVersionUID	= -4665388463973898411L;
+	private static final long			serialVersionUID	= -4665388463973898411L;
 
-	private static int			MODE_NEW			= 0;
-	private static int			MODE_EDIT			= 1;
+	private static int					MODE_NEW			= 0;
+	private static int					MODE_EDIT			= 1;
 
-	private JTextField			txtDni;
-	private JTextField			txtNombre;
+	private JTextField					txtDni;
+	private JTextField					txtNombre;
 
-	private JButton				btnVerAlquileres;
-	private JButton				btnBorrar;
+	private JButton						btnVerAlquileres;
+	private JButton						btnBorrar;
 
-	private JButton				btnBuscar;
-	private JButton				btnLimpiar;
+	private JButton						btnBuscar;
+	private JButton						btnLimpiar;
 
-	private JTextField			txtDniEditor;
-	private JTextField			txtNombreEditor;
-	private JTextField			txtApellidosEditor;
-	private JTextField			txtEmailEditor;
-	private JTextField			txtDireccionEditor;
-	private JTextField			txtTelefonoEditor;
-	private JTextField			txtCodPostalEditor;
+	private JTextField					txtDniEditor;
+	private JTextField					txtNombreEditor;
+	private JTextField					txtApellidosEditor;
+	private JTextField					txtEmailEditor;
+	private JTextField					txtDireccionEditor;
+	private JTextField					txtTelefonoEditor;
+	private JTextField					txtCodPostalEditor;
 
-	private JButton				btnNuevo;
-	private JButton				btnGuardar;
+	private JButton						btnNuevo;
+	private JButton						btnGuardar;
 
-	private String[]			header;
-	private JTable				table;
-	private TableModel			modelTable;
+	private String[]					header;
+	private JTable						table;
+	private TableModel					modelTable;
 
 	private ArrayList<CustomCliente>	clientes;
 	private ArrayList<CustomCliente>	clientesVisualizados;
 	private CustomCliente				currentCliente;
 
-	int							mode				= 0;
+	int									mode				= 0;
 
 	public PanelClientes() {
 
@@ -483,9 +483,6 @@ public class PanelClientes extends JPanel implements ActionListener {
 		if (clientes != null && clientes.size() > 0) {
 			clientesVisualizados = (ArrayList<CustomCliente>) clientes.clone();
 			updateData();
-			System.out.println("Se han cargado: " + this.clientesVisualizados.size() + " clientes");
-		} else {
-			System.out.println("No se ha cargado ningun cliente");
 		}
 	}
 
@@ -515,9 +512,6 @@ public class PanelClientes extends JPanel implements ActionListener {
 				}
 			}
 			updateData();
-			System.out.println("Se han cargado: " + this.clientesVisualizados.size() + " clientes");
-		} else {
-			System.out.println("No se ha cargado ningun cliente");
 		}
 	}
 
