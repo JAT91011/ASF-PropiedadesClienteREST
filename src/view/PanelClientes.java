@@ -23,7 +23,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import entities.Cliente;
+import entities.CustomCliente;
 import utilities.ClientManager;
 import view.components.TableModel;
 
@@ -58,9 +58,9 @@ public class PanelClientes extends JPanel implements ActionListener {
 	private JTable				table;
 	private TableModel			modelTable;
 
-	private ArrayList<Cliente>	clientes;
-	private ArrayList<Cliente>	clientesVisualizados;
-	private Cliente				currentCliente;
+	private ArrayList<CustomCliente>	clientes;
+	private ArrayList<CustomCliente>	clientesVisualizados;
+	private CustomCliente				currentCliente;
 
 	int							mode				= 0;
 
@@ -481,7 +481,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 		// TODO Obtener los clientes del servidor y cargar la tabla
 		clientes = ClientManager.getInstance().getAllClientes();
 		if (clientes != null && clientes.size() > 0) {
-			clientesVisualizados = (ArrayList<Cliente>) clientes.clone();
+			clientesVisualizados = (ArrayList<CustomCliente>) clientes.clone();
 			updateData();
 			System.out.println("Se han cargado: " + this.clientesVisualizados.size() + " clientes");
 		} else {
@@ -492,8 +492,8 @@ public class PanelClientes extends JPanel implements ActionListener {
 	public void filterData() {
 		// TODO visualizar los clientes con el dni y nombre introducidos
 		if (clientes != null && clientes.size() > 0) {
-			clientesVisualizados = new ArrayList<Cliente>();
-			for (Cliente c : clientes) {
+			clientesVisualizados = new ArrayList<CustomCliente>();
+			for (CustomCliente c : clientes) {
 				if (!txtDni.getText().isEmpty() && !txtNombre.getText().isEmpty()) {
 					// Se filtra por dni y por nombre
 					if (Integer.parseInt(txtDni.getText()) == c.getDni()
@@ -544,7 +544,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 	public void deleteCliente() {
 		int selectedRow = table.getSelectedRow();
 		if (selectedRow >= 0) {
-			Cliente c = clientesVisualizados.get(selectedRow);
+			CustomCliente c = clientesVisualizados.get(selectedRow);
 			if (ClientManager.getInstance().deleteCliente(c.getDni())) {
 				int aux = 0;
 				for (aux = 0; aux < clientes.size(); aux++) {
@@ -587,7 +587,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 		// Se comprueba el email 100
 		if (txtEmailEditor.getText().isEmpty()) {
 			errorMessage += " - El campo email del cliente es obligatorio.\n";
-		} else if (!Cliente.validateEmail(txtEmailEditor.getText())) {
+		} else if (!CustomCliente.validateEmail(txtEmailEditor.getText())) {
 			errorMessage += " - El email introducido es incorrecto.\n";
 		}
 
@@ -616,7 +616,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(Window.getInstance(), "Error en los siguientes campos:\n" + errorMessage, "Error",
 					JOptionPane.ERROR_MESSAGE);
 		} else {
-			currentCliente = new Cliente();
+			currentCliente = new CustomCliente();
 			currentCliente.setDni(Integer.parseInt(txtDniEditor.getText()));
 			currentCliente.setNombre(txtNombreEditor.getText().trim());
 			currentCliente.setApellido(txtApellidosEditor.getText().trim());
@@ -687,7 +687,7 @@ public class PanelClientes extends JPanel implements ActionListener {
 	public void showAlquileres() {
 		int selectedRow = table.getSelectedRow();
 		if (selectedRow >= 0) {
-			Cliente c = clientesVisualizados.get(selectedRow);
+			CustomCliente c = clientesVisualizados.get(selectedRow);
 			PanelAlquileres panAlquileres = new PanelAlquileres(c);
 			Window.getInstance().setContainer(panAlquileres);
 			Window.getInstance().setTitle("Alquileres de: " + c.getNombre().toUpperCase() + " " + c.getApellido().toUpperCase());

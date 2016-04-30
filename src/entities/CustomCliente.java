@@ -7,36 +7,36 @@ import java.util.regex.Pattern;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Cliente {
+public class CustomCliente {
 
-	private static final String	NIF_STRING_ASOCIATION	= "TRWAGMYFPDXBNJZSQVHLCKE";
-	private static final String	PATTERN_EMAIL			= "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+	private static final String			NIF_STRING_ASOCIATION	= "TRWAGMYFPDXBNJZSQVHLCKE";
+	private static final String			PATTERN_EMAIL			= "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-	private int					dni;
-	private String				nombre;
-	private String				apellido;
-	private String				email;
-	private String				direccion;
-	private int					codigoPostal;
-	private int					telefono;
-	private ArrayList<Alquiler>	alquileres;
+	private int							dni;
+	private String						nombre;
+	private String						apellido;
+	private String						email;
+	private String						direccion;
+	private int							codigoPostal;
+	private int							telefono;
+	private ArrayList<CustomAlquiler>	alquileres;
 
-	public Cliente() {
+	public CustomCliente() {
 
 	}
 
-	public Cliente(String nombre, String apellido, String email, String direccion, int codigoPostal, int telefono) {
+	public CustomCliente(String nombre, String apellido, String email, String direccion, int codigoPostal, int telefono) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.email = email;
 		this.direccion = direccion;
 		this.codigoPostal = codigoPostal;
 		this.telefono = telefono;
-		this.alquileres = new ArrayList<Alquiler>();
+		this.alquileres = new ArrayList<CustomAlquiler>();
 	}
 
-	public Cliente(int dni, String nombre, String apellido, String email, String direccion, int codigoPostal, int telefono) {
+	public CustomCliente(int dni, String nombre, String apellido, String email, String direccion, int codigoPostal, int telefono) {
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -44,7 +44,7 @@ public class Cliente {
 		this.direccion = direccion;
 		this.codigoPostal = codigoPostal;
 		this.telefono = telefono;
-		this.alquileres = new ArrayList<Alquiler>();
+		this.alquileres = new ArrayList<CustomAlquiler>();
 	}
 
 	public int getDni() {
@@ -113,11 +113,11 @@ public class Cliente {
 		this.telefono = telefono;
 	}
 
-	public ArrayList<Alquiler> getAlquileres() {
+	public ArrayList<CustomAlquiler> getAlquileres() {
 		return alquileres;
 	}
 
-	public void setAlquileres(ArrayList<Alquiler> alquileres) {
+	public void setAlquileres(ArrayList<CustomAlquiler> alquileres) {
 		this.alquileres = alquileres;
 	}
 

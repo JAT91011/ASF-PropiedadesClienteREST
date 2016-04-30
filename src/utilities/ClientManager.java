@@ -12,10 +12,10 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
-import entities.Actividad;
-import entities.Alquiler;
-import entities.Cliente;
-import entities.Propiedad;
+import entities.CustomActividad;
+import entities.CustomAlquiler;
+import entities.CustomCliente;
+import entities.CustomPropiedad;
 
 public class ClientManager {
 
@@ -26,7 +26,7 @@ public class ClientManager {
 	public static int				ERROR_CODE			= 205;
 	public static int				ALREADY_EXIST_CODE	= 206;
 
-	private static String			URL					= "http://localhost:8080/PropiedadesServidorREST/";
+	private static String			URL					= "http://localhost:8080/PropiedadesServidorREST_MYBATIS/";
 
 	private DefaultClientConfig		config;
 	private Client					client;
@@ -39,22 +39,22 @@ public class ClientManager {
 	}
 
 	// CLIENTES
-	public Cliente getClienteById(final int id) {
-		Cliente client = service.path("rest").path("clientes").path(Integer.toString(id)).get(Cliente.class);
+	public CustomCliente getClienteById(final int id) {
+		CustomCliente client = service.path("rest").path("clientes").path(Integer.toString(id)).get(CustomCliente.class);
 		return client;
 	}
 
-	public ArrayList<Cliente> getAllClientes() {
-		Cliente[] array = null;
+	public ArrayList<CustomCliente> getAllClientes() {
+		CustomCliente[] array = null;
 		try {
-			array = service.path("rest").path("clientes").get(Cliente[].class);
-			return new ArrayList<Cliente>(Arrays.asList(array));
+			array = service.path("rest").path("clientes").get(CustomCliente[].class);
+			return new ArrayList<CustomCliente>(Arrays.asList(array));
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	public boolean saveCliente(final Cliente client) {
+	public boolean saveCliente(final CustomCliente client) {
 		try {
 			ClientResponse response = service.path("rest").path("clientes").type(MediaType.APPLICATION_JSON).post(ClientResponse.class, client);
 			return response.getStatus() == SUCCESS_CODE ? true : false;
@@ -66,7 +66,7 @@ public class ClientManager {
 		}
 	}
 
-	public boolean editCliente(final Cliente client) {
+	public boolean editCliente(final CustomCliente client) {
 		ClientResponse response = service.path("rest").path("clientes").path(Integer.toString(client.getDni())).type(MediaType.APPLICATION_JSON)
 				.put(ClientResponse.class, client);
 		return response.getStatus() == EDIT_SUCCESS_CODE ? true : false;
@@ -85,12 +85,12 @@ public class ClientManager {
 	}
 
 	// ALQUILERES
-	public ArrayList<Alquiler> getAlquileresByDniCliente(final int dni) {
-		Alquiler[] array = service.path("rest").path("alquileres").path("cliente").path(Integer.toString(dni)).get(Alquiler[].class);
-		return new ArrayList<Alquiler>(Arrays.asList(array));
+	public ArrayList<CustomAlquiler> getAlquileresByDniCliente(final int dni) {
+		CustomAlquiler[] array = service.path("rest").path("alquileres").path("cliente").path(Integer.toString(dni)).get(CustomAlquiler[].class);
+		return new ArrayList<CustomAlquiler>(Arrays.asList(array));
 	}
 
-	public boolean saveAlquiler(final Alquiler alquiler) {
+	public boolean saveAlquiler(final CustomAlquiler alquiler) {
 		try {
 			ClientResponse response = service.path("rest").path("alquileres").type(MediaType.APPLICATION_JSON).post(ClientResponse.class, alquiler);
 			return response.getStatus() == SUCCESS_CODE ? true : false;
@@ -102,7 +102,7 @@ public class ClientManager {
 		}
 	}
 
-	public boolean editAlquiler(final Alquiler alquiler) {
+	public boolean editAlquiler(final CustomAlquiler alquiler) {
 		ClientResponse response = service.path("rest").path("alquileres").path("alquiler").path(Integer.toString(alquiler.getIdAlquiler()))
 				.type(MediaType.APPLICATION_JSON).put(ClientResponse.class, alquiler);
 		return response.getStatus() == EDIT_SUCCESS_CODE ? true : false;
@@ -121,24 +121,24 @@ public class ClientManager {
 	}
 
 	// ACTIVIDADES
-	public ArrayList<Actividad> getAllActividades() {
-		Actividad[] array = service.path("rest").path("actividades").get(Actividad[].class);
-		return new ArrayList<Actividad>(Arrays.asList(array));
+	public ArrayList<CustomActividad> getAllActividades() {
+		CustomActividad[] array = service.path("rest").path("actividades").get(CustomActividad[].class);
+		return new ArrayList<CustomActividad>(Arrays.asList(array));
 	}
 
-	public ArrayList<Actividad> getActividadesByIdPropiedad(final int idPropiedad) {
-		Actividad[] array = service.path("rest").path("actividades").path(Integer.toString(idPropiedad)).get(Actividad[].class);
-		return new ArrayList<Actividad>(Arrays.asList(array));
+	public ArrayList<CustomActividad> getActividadesByIdPropiedad(final int idPropiedad) {
+		CustomActividad[] array = service.path("rest").path("actividades").path(Integer.toString(idPropiedad)).get(CustomActividad[].class);
+		return new ArrayList<CustomActividad>(Arrays.asList(array));
 	}
 
 	// PROPIEDADES
-	public ArrayList<Propiedad> getAllPropiedades() {
-		Propiedad[] array = service.path("rest").path("propiedades").get(Propiedad[].class);
-		return new ArrayList<Propiedad>(Arrays.asList(array));
+	public ArrayList<CustomPropiedad> getAllPropiedades() {
+		CustomPropiedad[] array = service.path("rest").path("propiedades").get(CustomPropiedad[].class);
+		return new ArrayList<CustomPropiedad>(Arrays.asList(array));
 	}
 
-	public Propiedad getPropiedadById(final int idPropiedad) {
-		Propiedad propiedad = service.path("rest").path("propiedades").path(Integer.toString(idPropiedad)).get(Propiedad.class);
+	public CustomPropiedad getPropiedadById(final int idPropiedad) {
+		CustomPropiedad propiedad = service.path("rest").path("propiedades").path(Integer.toString(idPropiedad)).get(CustomPropiedad.class);
 		return propiedad;
 	}
 

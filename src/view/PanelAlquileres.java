@@ -32,10 +32,10 @@ import javax.swing.border.TitledBorder;
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JTextFieldDateEditor;
 
-import entities.Actividad;
-import entities.Alquiler;
-import entities.Cliente;
-import entities.Propiedad;
+import entities.CustomActividad;
+import entities.CustomAlquiler;
+import entities.CustomCliente;
+import entities.CustomPropiedad;
 import utilities.ClientManager;
 import view.components.TableModel;
 
@@ -60,10 +60,10 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 	private JComboBox<String>				cboPropiedades;
 	private JComboBox<String>				cboActividades;
 
-	private ArrayList<Alquiler>				alquileres;
+	private ArrayList<CustomAlquiler>		alquileres;
 
-	private ArrayList<Propiedad>			propiedades;
-	private ArrayList<Actividad>			actividades;
+	private ArrayList<CustomPropiedad>		propiedades;
+	private ArrayList<CustomActividad>		actividades;
 
 	private DefaultComboBoxModel<String>	cboPropiedadesModel;
 	private DefaultComboBoxModel<String>	cboActividadesModel;
@@ -73,10 +73,10 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 	private int								mode				= 0;
 
-	private Alquiler						currentAlquiler;
-	private Cliente							cliente;
+	private CustomAlquiler					currentAlquiler;
+	private CustomCliente					cliente;
 
-	public PanelAlquileres(Cliente cliente) {
+	public PanelAlquileres(CustomCliente cliente) {
 
 		this.cliente = cliente;
 
@@ -200,37 +200,41 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		table.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent me) {
 				int row = table.getSelectedRow();
-				Alquiler alquiler = alquileres.get(row);
+				CustomAlquiler alquiler = alquileres.get(row);
 				if (row >= 0) {
 					mode = MODE_EDIT;
 
 					// Se selecciona la propiedad
 					int indexPropiedad;
 					for (indexPropiedad = 0; indexPropiedad < propiedades.size(); indexPropiedad++) {
-						if (propiedades.get(indexPropiedad).getId() == alquiler.getPropiedad().getId()) {
+						if (propiedades.get(indexPropiedad).getIdPropiedad() == alquiler.getPropiedad().getIdPropiedad()) {
+							System.out.println(propiedades.get(indexPropiedad).getNombre());
 							break;
 						}
 					}
 					cboPropiedades.setSelectedIndex(indexPropiedad);
 
 					// Se selecciona la actividad
-					actividades = ClientManager.getInstance().getActividadesByIdPropiedad(propiedades.get(indexPropiedad).getId());
+					actividades = ClientManager.getInstance().getActividadesByIdPropiedad(propiedades.get(indexPropiedad).getIdPropiedad());
+					System.out.println(propiedades.size());
+					System.out.println(propiedades.get(indexPropiedad).getIdPropiedad());
+					System.out.println(actividades.size());
 					Vector<String> actividadesLabels = new Vector<String>();
-					for (Actividad a : actividades) {
+					for (CustomActividad a : actividades) {
 						actividadesLabels.add(a.getNombre());
 					}
 					cboActividadesModel = new DefaultComboBoxModel<>(actividadesLabels);
 					int indexActividad;
 					for (indexActividad = 0; indexActividad < actividades.size(); indexActividad++) {
-						if (actividades.get(indexActividad).getId() == alquiler.getActividad().getId()) {
+						if (actividades.get(indexActividad).getIdActividad() == alquiler.getActividad().getIdActividad()) {
 							break;
 						}
 					}
 					cboActividades.setSelectedIndex(indexActividad);
 
-					dcFechaInicio.setDate(alquiler.getFechaInicio());
+					dcFechaInicio.setDate(alquiler.getFecha_inicio());
 
-					dcFechaFin.setDate(alquiler.getFechaFin());
+					dcFechaFin.setDate(alquiler.getFecha_fin());
 
 					txtPrecio.setText(Double.toString(alquiler.getPrecio()));
 				}
@@ -294,9 +298,10 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 		cboPropiedades.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		cboPropiedades.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				actividades = ClientManager.getInstance().getActividadesByIdPropiedad(propiedades.get(cboPropiedades.getSelectedIndex()).getId());
+				actividades = ClientManager.getInstance()
+						.getActividadesByIdPropiedad(propiedades.get(cboPropiedades.getSelectedIndex()).getIdPropiedad());
 				Vector<String> actividadesLabels = new Vector<String>();
-				for (Actividad a : actividades) {
+				for (CustomActividad a : actividades) {
 					actividadesLabels.add(a.getNombre());
 				}
 				cboActividadesModel = new DefaultComboBoxModel<>(actividadesLabels);
@@ -456,10 +461,10 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 			// NOMBRE
 			table.getModel().setValueAt(alquileres.get(i).getActividad().getNombre(), i, 1);
 			// FECHA INICIO
-			String fechaInicio = new SimpleDateFormat("dd-MM-yyyy").format(alquileres.get(i).getFechaInicio());
+			String fechaInicio = new SimpleDateFormat("dd-MM-yyyy").format(alquileres.get(i).getFecha_inicio());
 			table.getModel().setValueAt(fechaInicio, i, 2);
 			// FECHA FIN
-			String fechaFin = new SimpleDateFormat("dd-MM-yyyy").format(alquileres.get(i).getFechaFin());
+			String fechaFin = new SimpleDateFormat("dd-MM-yyyy").format(alquileres.get(i).getFecha_fin());
 			table.getModel().setValueAt(fechaFin, i, 3);
 			// PRECIO
 			table.getModel().setValueAt(alquileres.get(i).getPrecio() + " \u20ac", i, 4);
@@ -469,7 +474,7 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 	public void deleteAlquiler() {
 		int selectedRow = table.getSelectedRow();
 		if (selectedRow >= 0) {
-			Alquiler a = alquileres.get(selectedRow);
+			CustomAlquiler a = alquileres.get(selectedRow);
 			if (ClientManager.getInstance().deleteAlquiler(a.getIdAlquiler())) {
 				int aux = 0;
 				for (aux = 0; aux < alquileres.size(); aux++) {
@@ -496,16 +501,16 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 
 		propiedades = ClientManager.getInstance().getAllPropiedades();
 		Vector<String> propiedadesLabels = new Vector<String>();
-		for (Propiedad p : propiedades) {
+		for (CustomPropiedad p : propiedades) {
 			propiedadesLabels.add(p.getNombre());
 		}
 		cboPropiedadesModel = new DefaultComboBoxModel<>(propiedadesLabels);
 		cboPropiedades.setModel(cboPropiedadesModel);
 
 		if (propiedades.size() > 0) {
-			actividades = ClientManager.getInstance().getActividadesByIdPropiedad(propiedades.get(0).getId());
+			actividades = ClientManager.getInstance().getActividadesByIdPropiedad(propiedades.get(0).getIdPropiedad());
 			Vector<String> actividadesLabels = new Vector<String>();
-			for (Actividad a : actividades) {
+			for (CustomActividad a : actividades) {
 				actividadesLabels.add(a.getNombre());
 			}
 			cboActividadesModel = new DefaultComboBoxModel<>(actividadesLabels);
@@ -552,12 +557,12 @@ public class PanelAlquileres extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(Window.getInstance(), "Error en los siguientes campos:\n" + errorMessage, "Error",
 					JOptionPane.ERROR_MESSAGE);
 		} else {
-			currentAlquiler = new Alquiler();
+			currentAlquiler = new CustomAlquiler();
 			currentAlquiler.setCliente(cliente);
 			currentAlquiler.setPropiedad(propiedades.get(cboPropiedades.getSelectedIndex()));
 			currentAlquiler.setActividad(actividades.get(cboActividades.getSelectedIndex()));
-			currentAlquiler.setFechaInicio(dcFechaInicio.getDate());
-			currentAlquiler.setFechaFin(dcFechaFin.getDate());
+			currentAlquiler.setFecha_inicio(dcFechaInicio.getDate());
+			currentAlquiler.setFecha_fin(dcFechaFin.getDate());
 			currentAlquiler.setPrecio(Double.parseDouble(txtPrecio.getText()));
 
 			if (mode == MODE_NEW) {

@@ -3,10 +3,10 @@ package test;
 import java.util.ArrayList;
 import java.util.Date;
 
-import entities.Actividad;
-import entities.Alquiler;
-import entities.Cliente;
-import entities.Propiedad;
+import entities.CustomActividad;
+import entities.CustomAlquiler;
+import entities.CustomCliente;
+import entities.CustomPropiedad;
 import utilities.ClientManager;
 
 public class Test {
@@ -17,9 +17,9 @@ public class Test {
 
 		// INSERTAR CLIENTES
 		System.out.println("INSERTAMOS TRES CLIENTES DE PRUEBA");
-		Cliente cl1 = new Cliente(78952922, "Endika", "Salgueiro", "email@email.com", "Calle falsa 1234", 48012, 123456789);
-		Cliente cl2 = new Cliente(12457845, "Jordan", "Aranda", "email@email.com", "Calle falsa 1234", 48012, 123456789);
-		Cliente cl3 = new Cliente(12345678, "Prueba", "Prueba", "email@email.com", "Calle falsa 1234", 48012, 123456789);
+		CustomCliente cl1 = new CustomCliente(78952922, "Endika", "Salgueiro", "email@email.com", "Calle falsa 1234", 48012, 123456789);
+		CustomCliente cl2 = new CustomCliente(12457845, "Jordan", "Aranda", "email@email.com", "Calle falsa 1234", 48012, 123456789);
+		CustomCliente cl3 = new CustomCliente(12345678, "Prueba", "Prueba", "email@email.com", "Calle falsa 1234", 48012, 123456789);
 		if (ClientManager.getInstance().saveCliente(cl1)) {
 			System.out.println("Insertado correctamente");
 		} else {
@@ -38,8 +38,8 @@ public class Test {
 
 		// OBTENEMOS TODOS LOS CLIENTES DE LA BASE DE DATOS Y LOS MOSTRAMOS
 		System.out.println("\nVISUALIZAMOS TODOS LOS CLIENTES DE LA BASE DE DATOS");
-		ArrayList<Cliente> clientes = ClientManager.getInstance().getAllClientes();
-		for (Cliente c : clientes) {
+		ArrayList<CustomCliente> clientes = ClientManager.getInstance().getAllClientes();
+		for (CustomCliente c : clientes) {
 			System.out.println(c.toString());
 		}
 
@@ -69,15 +69,15 @@ public class Test {
 
 		// OBTENEMOS TODAS LAS ACTIVIDADES DE LA BASE DE DATOS Y LAS MOSTRAMOS
 		System.out.println("\nVISUALIZAMOS TODAS LAS ACTIVIDADES DE LA BASE DE DATOS");
-		ArrayList<Actividad> actividades = ClientManager.getInstance().getAllActividades();
-		for (Actividad a : actividades) {
+		ArrayList<CustomActividad> actividades = ClientManager.getInstance().getAllActividades();
+		for (CustomActividad a : actividades) {
 			System.out.println(a.toString());
 		}
 
 		// OBTENEMOS TODAS LAS ACTIVIDADES DE LA PROPIEDAD CON ID 1
 		System.out.println("\nVISUALIZAMOS TODAS LAS ACTIVIDADES DE LA PROPIEDAD CON ID 1");
-		ArrayList<Actividad> actividadesPropiedad = ClientManager.getInstance().getActividadesByIdPropiedad(1);
-		for (Actividad a : actividadesPropiedad) {
+		ArrayList<CustomActividad> actividadesPropiedad = ClientManager.getInstance().getActividadesByIdPropiedad(1);
+		for (CustomActividad a : actividadesPropiedad) {
 			System.out.println(a.toString());
 		}
 
@@ -85,14 +85,14 @@ public class Test {
 
 		// OBTENEMOS TODAS LAS PROPIEDADES Y LAS MOSTRAMOS
 		System.out.println("\nVISUALIZAMOS TODAS LAS PROPIEDADES DE LA BASE DE DATOS");
-		ArrayList<Propiedad> propiedades = ClientManager.getInstance().getAllPropiedades();
-		for (Propiedad p : propiedades) {
+		ArrayList<CustomPropiedad> propiedades = ClientManager.getInstance().getAllPropiedades();
+		for (CustomPropiedad p : propiedades) {
 			System.out.println(p.toString());
 		}
 
 		// OBTENEMOS LA PROPIEDAD CON ID 1 Y LA MOSTRAMOS
 		System.out.println("\nVISUALIZAMOS LA PROPIEDAD CON ID 1");
-		Propiedad propiedad = ClientManager.getInstance().getPropiedadById(1);
+		CustomPropiedad propiedad = ClientManager.getInstance().getPropiedadById(1);
 		System.out.println(propiedad.toString());
 
 		// ALQUILERES
@@ -100,11 +100,11 @@ public class Test {
 		// INSERTAR ALQUILERES
 		System.out.println("\nINSERTAMOS TRES ALQUILERES DE PRUEBA");
 		Date date = new Date();
-		Alquiler alq1 = new Alquiler(cl1, new Actividad(1, "Jugar a futbol"), new Propiedad(1, "Polideportivo Karrantza"), new Date(date.getTime()),
+		CustomAlquiler alq1 = new CustomAlquiler(cl1, new CustomActividad(1, "Jugar a futbol"), new CustomPropiedad(1, "Polideportivo Karrantza"), new Date(date.getTime()),
 				new Date(date.getTime()), 500);
-		Alquiler alq2 = new Alquiler(cl2, new Actividad(1, "Jugar a futbol"), new Propiedad(1, "Polideportivo Karrantza"), new Date(date.getTime()),
+		CustomAlquiler alq2 = new CustomAlquiler(cl2, new CustomActividad(1, "Jugar a futbol"), new CustomPropiedad(1, "Polideportivo Karrantza"), new Date(date.getTime()),
 				new Date(date.getTime()), 700);
-		Alquiler alq3 = new Alquiler(cl1, new Actividad(2, "Jugar a baloncesto"), new Propiedad(2, "Cancha de baloncesto Karrantza"),
+		CustomAlquiler alq3 = new CustomAlquiler(cl1, new CustomActividad(2, "Jugar a baloncesto"), new CustomPropiedad(2, "Cancha de baloncesto Karrantza"),
 				new Date(date.getTime()), new Date(date.getTime()), 450);
 
 		if (ClientManager.getInstance().saveAlquiler(alq1)) {
@@ -125,14 +125,14 @@ public class Test {
 
 		// OBTENEMOS TODOS LOS ALQUILERES DEL CLIENTE 1 Y LOS MOSTRAMOS
 		System.out.println("\nVISUALIZAMOS TODOS LOS ALQUILERES DEL CLIENTE 1 DE LA BASE DE DATOS");
-		ArrayList<Alquiler> alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cl1.getDni());
-		for (Alquiler a : alquileres) {
+		ArrayList<CustomAlquiler> alquileres = ClientManager.getInstance().getAlquileresByDniCliente(cl1.getDni());
+		for (CustomAlquiler a : alquileres) {
 			System.out.println(a.toString());
 		}
 
 		// EDITAMOS EL PRIMER ALQUILER DEL CLIENTE 1
 		System.out.println("\nEDITAMOS EL PRIMER ALQUILER DEL CLIENTE 1");
-		Alquiler alquilerEditado = alquileres.get(0);
+		CustomAlquiler alquilerEditado = alquileres.get(0);
 		alquilerEditado.setPrecio(9999);
 		if (ClientManager.getInstance().editAlquiler(alquilerEditado)) {
 			System.out.println("Alquiler editado.");
